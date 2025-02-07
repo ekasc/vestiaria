@@ -21,9 +21,11 @@ import { AuroraText } from "./aurora-text";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
 import { Link } from "react-router";
+import { useAuth } from "@/hooks/use-auth";
 
 export function AppSidebar() {
 	const { toggleSidebar } = useSidebar();
+	const {isAuthenticated,user}= useAuth()
 
 	const menuItems: {
 		title: string;
