@@ -1,6 +1,182 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+@config "../tailwind.config.js";
+
+@theme {
+	--radius-lg: var(--radius);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-sm: calc(var(--radius) - 4px);
+
+	--color-background: hsl(var(--background));
+	--color-foreground: hsl(var(--foreground));
+
+	--color-card: hsl(var(--card));
+	--color-card-foreground: hsl(var(--card-foreground));
+
+	--color-popover: hsl(var(--popover));
+	--color-popover-foreground: hsl(var(--popover-foreground));
+
+	--color-primary: hsl(var(--primary));
+	--color-primary-foreground: hsl(var(--primary-foreground));
+
+	--color-secondary: hsl(var(--secondary));
+	--color-secondary-foreground: hsl(var(--secondary-foreground));
+
+	--color-muted: hsl(var(--muted));
+	--color-muted-foreground: hsl(var(--muted-foreground));
+
+	--color-accent: hsl(var(--accent));
+	--color-accent-foreground: hsl(var(--accent-foreground));
+
+	--color-destructive: hsl(var(--destructive));
+	--color-destructive-foreground: hsl(var(--destructive-foreground));
+
+	--color-border: hsl(var(--border));
+	--color-input: hsl(var(--input));
+	--color-ring: hsl(var(--ring));
+
+	--color-chart-1: hsl(var(--chart-1));
+	--color-chart-2: hsl(var(--chart-2));
+	--color-chart-3: hsl(var(--chart-3));
+	--color-chart-4: hsl(var(--chart-4));
+	--color-chart-5: hsl(var(--chart-5));
+
+	--color-sidebar: hsl(var(--sidebar-background));
+	--color-sidebar-foreground: hsl(var(--sidebar-foreground));
+	--color-sidebar-primary: hsl(var(--sidebar-primary));
+	--color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+	--color-sidebar-accent: hsl(var(--sidebar-accent));
+	--color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+	--color-sidebar-border: hsl(var(--sidebar-border));
+	--color-sidebar-ring: hsl(var(--sidebar-ring));
+
+	--color-color-1: hsl(var(--color-1));
+	--color-color-2: hsl(var(--color-2));
+	--color-color-3: hsl(var(--color-3));
+	--color-color-4: hsl(var(--color-4));
+	--color-color-5: hsl(var(--color-5));
+
+	--animate-accordion-down: accordion-down 0.2s ease-out;
+	--animate-accordion-up: accordion-up 0.2s ease-out;
+
+	--animate-aurora-border:
+		aurora-border 6s ease-in-out infinite,
+		aurora-2 12s ease-in-out infinite alternate;
+
+	@keyframes accordion-down {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--radix-accordion-content-height);
+		}
+	}
+	@keyframes accordion-up {
+		from {
+			height: var(--radix-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
+	@keyframes aurora-border {
+		0%,
+		100% {
+			border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+		}
+		25% {
+			border-radius: 47% 29% 39% 49% / 61% 19% 66% 26%;
+		}
+		50% {
+			border-radius: 57% 23% 47% 72% / 63% 17% 66% 33%;
+		}
+		75% {
+			border-radius: 28% 49% 29% 100% / 93% 20% 64% 25%;
+		}
+	}
+
+	@keyframes aurora-1 {
+		0%,
+		100% {
+			top: 0;
+			right: 0;
+		}
+		50% {
+			top: 50%;
+			right: 25%;
+		}
+		75% {
+			top: 25%;
+			right: 50%;
+		}
+	}
+	@keyframes aurora-2 {
+		0%,
+		100% {
+			top: 0;
+			left: 0;
+		}
+		60% {
+			top: 75%;
+			left: 25%;
+		}
+		85% {
+			top: 50%;
+			left: 50%;
+		}
+	}
+	@keyframes aurora-3 {
+		0%,
+		100% {
+			bottom: 0;
+			left: 0;
+		}
+		40% {
+			bottom: 50%;
+			left: 25%;
+		}
+		65% {
+			bottom: 25%;
+			left: 50%;
+		}
+	}
+	@keyframes aurora-4 {
+		0%,
+		100% {
+			bottom: 0;
+			right: 0;
+		}
+		50% {
+			bottom: 25%;
+			right: 40%;
+		}
+		90% {
+			bottom: 50%;
+			right: 25%;
+		}
+	}
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
+}
 
 @layer base {
 	:root {
@@ -69,7 +245,8 @@
 
 		/* Gradient Background Styles */
 		.bg-drop {
-			background-image: radial-gradient(
+			background-image:
+				radial-gradient(
 					at 100% 0%,
 					hsl(var(--drop1)) 0px,
 					transparent 70%
@@ -153,6 +330,19 @@
 @layer base {
 	* {
 		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
+
+/*
+  ---break---
+*/
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
 	}
 	body {
 		@apply bg-background text-foreground;

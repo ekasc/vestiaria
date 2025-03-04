@@ -7,7 +7,7 @@ interface AuthContextType {
 	isAuthenticated: boolean;
 	login: (
 		email: string,
-		password: string
+		password: string,
 	) => Promise<{ user: User | null; token: string | null }>;
 	logout: () => void;
 }
@@ -19,25 +19,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [authToken, setAuthToken] = useState<string | null>(null);
 
 	const isAuthenticated = !!authToken;
-  
-    const userResponseTest: User = {
-        id: 1,
-        firstName: "Rahul",
-        lastName: "Kumar",
-        email: "djnjkdnajs",
-        token: "12321:assdjsndkjsandan",
-        role: ROLE.Admin
-    };
 
+	const userResponseTest: User = {
+		id: 1,
+		firstName: "Rahul",
+		lastName: "Kumar",
+		email: "djnjkdnajs",
+		token: "12321:assdjsndkjsandan",
+		role: ROLE.Admin,
+	};
 
 	useEffect(() => {
-        setUser(userResponseTest);
+		setUser(userResponseTest);
+		console.log("in auth provider");
 		const storedUser = localStorage.getItem("user");
 		const storedToken = localStorage.getItem("token");
 		if (storedUser && storedToken) {
 			setUser(JSON.parse(storedUser));
 			setAuthToken(storedToken);
 		}
+		console.log(user);
 	}, []);
 
 	async function login(email: string, password: string) {
@@ -49,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			lastName: "Kumar",
 			email: email,
 			token: "12321:assdjsndkjsandan",
-            role: ROLE.Admin
+			role: ROLE.Admin,
 		};
 
 		setUser(userResponse);

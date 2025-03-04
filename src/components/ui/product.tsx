@@ -55,17 +55,17 @@ export default function Product() {
 				<h1>Loading...</h1>
 			) : (
 				<div className="p- h-full">
-					<div className=" w-full flex h-full">
-						<div className=" w-2/3 flex m-2  flex-col gap-2">
+					<div className=" flex h-full w-full">
+						<div className=" m-2 flex w-2/3  flex-col gap-2">
 							<div className="h">
 								<img src={product.image} />
 							</div>
-							<div className="border px-3 py-2 bg-sidebar flex flex-col">
+							<div className="flex flex-col border bg-sidebar px-3 py-2">
 								<h1 className="text-xl leading-9">
 									You might also like
 								</h1>
 							</div>
-							<div className="grid grid-cols-3 w-full gap-3">
+							<div className="grid w-full grid-cols-3 gap-3">
 								{randomProducts.map((item) => {
 									return (
 										<Link
@@ -81,8 +81,8 @@ export default function Product() {
 								})}
 							</div>
 						</div>
-						<div className="border w-full flex m-2 bg-sidebar flex-col gap-4 ">
-							<h1 className="text-2xl border-b p-2">
+						<div className="m-2 flex w-full flex-col gap-4 border bg-sidebar ">
+							<h1 className="border-b p-2 text-2xl">
 								{product.title}
 							</h1>
 							<p className="p-2 leading-7">

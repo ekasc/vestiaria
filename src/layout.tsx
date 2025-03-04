@@ -1,12 +1,15 @@
 import { ThemeProvider } from "next-themes";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import App from "./App";
 import { AppSidebar, CustomTrigger } from "./components/ui/app-sidebar";
 import Product from "./components/ui/product";
 import { SidebarProvider } from "./components/ui/sidebar";
-import Auth from "./routes/auth";
-import Shop from "./routes/shop";
+import { useAuth } from "./hooks/use-auth";
 import { AuthProvider } from "./lib/authprovider";
+import { Admin } from "./routes/admin/landing";
+import Auth from "./routes/auth";
+import { Profile } from "./routes/profile";
+import Shop from "./routes/shop";
 
 export default function Layout() {
 	return (
@@ -25,7 +28,14 @@ export default function Layout() {
 						{/* <GridPatternDashed /> */}
 						<Routes>
 							<Route path="/" element={<App />} />
-							<Route path="/auth" element={<Auth />} />
+							<Route
+								path="/auth/signup"
+								element={<Auth type="signup" />}
+							/>
+							<Route
+								path="/auth/login"
+								element={<Auth type="login" />}
+							/>
 							<Route path="/shop" element={<Shop />} />
 							<Route
 								path="/shop/:productId"
@@ -36,10 +46,35 @@ export default function Layout() {
 								path="/shop/category/:category"
 								element={<Shop />}
 							/>
+							<Route
+								path="/profile"
+								element={
+									<ProtectedRoute>
+										<Profile />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/admin"
+								element={
+									<ProtectedRoute>
+										<Admin />
+									</ProtectedRoute>
+								}
+							/>
 						</Routes>
 					</SidebarProvider>
 				</ThemeProvider>
 			</AuthProvider>
 		</>
 	);
+}
+
+export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+	const { isAuthenticated } = useAuth();
+	if (!isAuthenticated) {
+		return <Navigate to="/auth/login" replace />;
+	}
+
+	return children;
 }
