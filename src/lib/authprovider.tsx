@@ -15,8 +15,14 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	const [user, setUser] = useState<User | null>(null);
-	const [authToken, setAuthToken] = useState<string | null>(null);
+	const [user, setUser] = useState<User | null>(() => {
+		const storedUser = localStorage.getItem("user");
+		return storedUser ? JSON.parse(storedUser) : null;
+	});
+
+	const [authToken, setAuthToken] = useState<string | null>(() =>
+		localStorage.getItem("token"),
+	);
 
 	const isAuthenticated = !!authToken;
 
@@ -30,28 +36,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	};
 
 	useEffect(() => {
-		setUser(userResponseTest);
-		console.log("in auth provider");
+		// setUser(userResponseTest);
+		// console.log("in auth provider");
 		const storedUser = localStorage.getItem("user");
 		const storedToken = localStorage.getItem("token");
+		console.log("storedToken1: ", storedToken);
 		if (storedUser && storedToken) {
 			setUser(JSON.parse(storedUser));
 			setAuthToken(storedToken);
 		}
-		console.log(user);
+		console.log("storedToken2: ", storedToken);
 	}, []);
 
 	async function login(email: string, password: string) {
 		//API call to login;
 
-		const userResponse: User = {
-			id: 1,
-			firstName: "Rahul",
-			lastName: "Kumar",
+		let userResponse: User = {
+			id: 2,
+			firstName: "admin",
+			lastName: "user",
 			email: email,
-			token: "12321:assdjsndkjsandan",
+			token: "xycedjnskdnkjsnd",
 			role: ROLE.Admin,
+			password,
 		};
+
+		if (email == "customer") {
+			userResponse = {
+				id: 1,
+				firstName: "Rahul",
+				lastName: "Kumar",
+				email: email,
+				token: "12321:assdjsndkjsandan",
+				role: ROLE.Customer,
+				password,
+			};
+		}
 
 		setUser(userResponse);
 		setAuthToken(userResponse.token);

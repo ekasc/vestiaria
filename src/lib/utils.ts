@@ -1,3 +1,4 @@
+import { ProductType } from "@/models/product";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -5,121 +6,35 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export type ProductType = {
-	id: string;
-	title: string;
-	price: number;
-	// category: Clothing | Footwear | Accessories | Electronics;
-	category: string;
-	description: string;
-	image: string;
+// Example product for testing purposes
+export const testProduct: ProductType = {
+	id: "1",
+	title: "Test Jacket",
+	price: 120.0,
+	category: "Clothing",
+	description: "A premium jacket crafted from the finest materials.",
+	image: "https://example.com/images/jacket.jpg",
+	variants: [
+		// Red variants
+		{ size: "7", color: "red", stock: 10 },
+		{ size: "9", color: "red", stock: 0 }, // Out of stock
+		{ size: "10", color: "red", stock: 2 },
+		{ size: "11", color: "red", stock: 4 },
+		// Blue variants
+		{ size: "7", color: "blue", stock: 6 },
+		{ size: "8", color: "blue", stock: 0 }, // Out of stock
+		{ size: "9", color: "blue", stock: 3 },
+		{ size: "11", color: "blue", stock: 5 },
+		// Black variants
+		{ size: "8", color: "black", stock: 2 },
+		{ size: "9", color: "black", stock: 4 },
+		{ size: "10", color: "black", stock: 0 }, // Out of stock
+		{ size: "11", color: "black", stock: 3 },
+		// White variants
+		{ size: "7", color: "white", stock: 1 },
+		{ size: "8", color: "white", stock: 3 },
+		{ size: "9", color: "white", stock: 6 },
+		{ size: "10", color: "white", stock: 2 },
+		{ size: "11", color: "white", stock: 0 }, // Out of stock
+	],
 };
-
-type Clothing = {
-	size: string;
-	color: string;
-	gender: string;
-};
-
-type Footwear = Clothing;
-
-type Accessories = {
-	size: string;
-	color: string;
-	type: string;
-};
-
-type Electronics = {
-	type: string;
-	color: string;
-};
-
-interface Exif {
-	make: string;
-	model: string;
-	exposure_time: string;
-	aperture: string;
-	focal_length: string;
-	iso: number;
-}
-
-interface Position {
-	latitude: number;
-	longitude: number;
-}
-
-interface Location {
-	name: string;
-	city: string;
-	country: string;
-	position: Position;
-}
-
-interface Collection {
-	id: number;
-	title: string;
-	published_at: string;
-	last_collected_at: string;
-	updated_at: string;
-	cover_photo: null | any; // Replace `any` with a specific type if known
-	user: null | any; // Replace `any` with a specific type if known
-}
-
-interface Urls {
-	raw: string;
-	full: string;
-	regular: string;
-	small: string;
-	thumb: string;
-}
-
-interface Links {
-	self: string;
-	html: string;
-	download: string;
-	download_location: string;
-}
-
-interface UserLinks {
-	self: string;
-	html: string;
-	photos: string;
-	likes: string;
-	portfolio: string;
-}
-
-interface User {
-	id: string;
-	updated_at: string;
-	username: string;
-	name: string;
-	portfolio_url: string;
-	bio: string;
-	location: string;
-	total_likes: number;
-	total_photos: number;
-	total_collections: number;
-	instagram_username: string;
-	twitter_username: string;
-	links: UserLinks;
-}
-
-export interface PhotoResponse {
-	id: string;
-	created_at: string;
-	updated_at: string;
-	width: number;
-	height: number;
-	color: string;
-	blur_hash: string;
-	downloads: number;
-	likes: number;
-	liked_by_user: boolean;
-	description: string;
-	exif: Exif;
-	location: Location;
-	current_user_collections: Collection[];
-	urls: Urls;
-	links: Links;
-	user: User;
-}

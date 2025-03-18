@@ -10,6 +10,8 @@ import { Admin } from "./routes/admin/landing";
 import Auth from "./routes/auth";
 import { Profile } from "./routes/profile";
 import Shop from "./routes/shop";
+import { ROLE } from "./models/user";
+import Cart from "./routes/cart";
 
 export default function Layout() {
 	return (
@@ -57,11 +59,12 @@ export default function Layout() {
 							<Route
 								path="/admin"
 								element={
-									<ProtectedRoute>
+									<ProtectedRoute requiredRole={ROLE.Admin}>
 										<Admin />
 									</ProtectedRoute>
 								}
 							/>
+							<Route path="/cart" element={<Cart />} />
 						</Routes>
 					</SidebarProvider>
 				</ThemeProvider>
@@ -70,9 +73,22 @@ export default function Layout() {
 	);
 }
 
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-	const { isAuthenticated } = useAuth();
+interface ProtectedRouteProps {
+	children: React.ReactNode;
+	requiredRole?: ROLE;
+}
+
+export function ProtectedRoute({
+	children,
+	requiredRole,
+}: ProtectedRouteProps) {
+	const { isAuthenticated, user } = useAuth();
+
 	if (!isAuthenticated) {
+		return <Navigate to="/auth/login" replace />;
+	}
+
+	if (requiredRole && user?.role !== requiredRole) {
 		return <Navigate to="/auth/login" replace />;
 	}
 

@@ -11,6 +11,7 @@ import { Link } from "react-router";
 
 export default function Auth({ type }: { type: string }) {
 	const { setOpen } = useSidebar();
+	window.onpopstate = () => setOpen(false);
 
 	useEffect(() => setOpen(false), []);
 

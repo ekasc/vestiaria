@@ -1,26 +1,28 @@
 import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarGroupContent,
-	SidebarGroupLabel,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	useSidebar,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { ROLE } from "@/models/user";
 import {
-	Gem,
-	Shirt,
-	ShoppingBag,
-	ShoppingCart,
-	SmartphoneCharging,
-	User,
+    Gem,
+    PiggyBank,
+    Settings,
+    Shirt,
+    ShoppingBag,
+    ShoppingCart,
+    SmartphoneCharging,
+    User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { AuroraText } from "./aurora-text";
 import { Button } from "./button";
 
@@ -31,12 +33,41 @@ interface MenuItem {
 }
 
 export function AppSidebar() {
-	const { isAuthenticated, user } = useAuth();
+	const { isAuthenticated, user, login, logout } = useAuth();
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+	const location = useLocation();
+	const { setOpen } = useSidebar();
 
 	useEffect(() => {
-		console.log(isAuthenticated, user);
-		if (isAuthenticated && user?.role == ROLE.Customer) {
+		if (
+			location.pathname === "/auth/login" ||
+			location.pathname === "/auth/signup"
+		) {
+			setOpen(false);
+		} else {
+			setOpen(true);
+		}
+		console.log("isAuthenticated: ",isAuthenticated);
+		if (isAuthenticated && user?.role == ROLE.Admin) {
+			const a = [
+				{
+					title: "Admin Home",
+					url: "/admin",
+					icon: Settings,
+				},
+				{
+					title: "Products",
+					url: "/admin/products",
+					icon: Shirt,
+				},
+				{
+					title: "Orders",
+					url: "/admin/orders",
+					icon: PiggyBank,
+				},
+			];
+			setMenuItems(a);
+		} else {
 			const a = [
 				{
 					title: "All",
@@ -65,22 +96,8 @@ export function AppSidebar() {
 				},
 			];
 			setMenuItems(a);
-		} else {
-			const a = [
-				{
-					title: "All",
-					url: "/shop",
-					icon: ShoppingBag,
-				},
-				{
-					title: "Men",
-					url: "/shop/category/men's clothing",
-					icon: Shirt,
-				},
-			];
-			setMenuItems(a);
 		}
-	}, [isAuthenticated, user]);
+	}, [isAuthenticated, location.pathname, setOpen, user]);
 
 	return (
 		<Sidebar variant="floating">
@@ -110,6 +127,26 @@ export function AppSidebar() {
 				</SidebarGroupContent>
 			</SidebarContent>
 			<SidebarFooter className="border-t">
+				{/* -------------test auth-------------- */}
+				<div className=" z-[10000] gap-4 flex flex-col m-4">
+					<Button onClick={() => login("admin", "testpass")}>
+						test login admin
+					</Button>
+					<Button onClick={() => login("customer", "testpass")}>
+						test login customer
+					</Button>
+					<Button onClick={() => logout()}>test logout</Button>
+					<span
+						className={
+							isAuthenticated
+								? "text-green-600 font-black"
+								: "text-destructive font-black"
+						}
+					>
+						{isAuthenticated ? "Logged in" : "Logged out"}
+					</span>
+				</div>
+				{/* ----------------test auth end-------------- */}
 				<div className="flex justify-between w-full px-3 py-2">
 					<Link to="/profile">
 						<User className="w-6 h-6" />
