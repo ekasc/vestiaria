@@ -8,29 +8,85 @@ import { ResponseType } from "@/lib/utils";
 import { authSchema, FieldInfo, UserInputSchema } from "@/models/schema";
 import { type AnyFieldApi, useForm } from "@tanstack/react-form";
 import { RefreshCcw } from "lucide-react";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import { useAuth } from "@/hooks/use-auth";
+import { User } from "@/models/user";
 
+// authToken
 export default function Profile() {
+	const { authToken, logout } = useAuth();
+	const [user, setUser] = useState<User | null>(null);
+	const [svgUser, setSVGUser] = useState<string | "">("");
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState("");
 
-	useEffect(()=>{
-		
-	},[])
+	useEffect(() => {
+		const fetchUserProfile = async () => {
+			try {
+				const req = await fetch(
+					`${import.meta.env.VITE_API_URL}/api/v1/user/profile`,
+					{
+						headers: {
+							Authorization: `Bearer ${authToken}`,
+						},
+						method: "GET",
+					}
+				);
+				if (req.status != 200) {
+					logout();
+				}
+				const resp = (await req.json()) as ResponseType;
 
+				setUser(resp.data);
+				setSVGUser(resp.data.svgText);
+			} catch (err) {
+				setError("Failed to load user profile");
+				console.error(err);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		if (authToken) {
+			fetchUserProfile();
+		}
+	}, [authToken]);
 
 	return (
 		<>
-			<SignUp />
+			<SignUp user={user} svgText={svgUser} />
 		</>
 	);
 }
 
+type SignUpProps = {
+	user: User | null;
+	svgText: string | "";
+};
 
+function SignUp({ user, svgText }: SignUpProps) {
+	const { logout,authToken } = useAuth();
+	const svgRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (svgRef.current) {
+			svgRef.current.innerHTML = svgText;
+		}
+	}, [svgText]);
 
+	console.log("UserSignuPViwe", user, "svggg", svgText);
+	const svgElement = createRef<SVGSVGElement>();
+	// if (svgElement.current) {
+	// 	svgElement.current.innerHTML = svgText;
+	// }
 
-function SignUp() {
-	// const svgElement = createRef<SVGSVGElement>();
-	// const [avatar, setAvatar] = useState<string | undefined>("");
+	useEffect(() => {
+		if (svgElement.current) {
+			svgElement.current.innerHTML = svgText;
+		}
+	}, [svgText]);
+
+	const [avatar, setAvatar] = useState<string | undefined>(svgText);
 	async function getRandomAvatar() {
 		const req = await fetch(
 			`https://api.dicebear.com/9.x/pixel-art/svg/seed=${generateRandomSeed()}`,
@@ -42,8 +98,10 @@ function SignUp() {
 			console.error("error occured");
 			return;
 		}
+
 		const resp = await req.text();
-		console.log(resp);
+		setAvatar(resp);
+		console.log("svgFoind:--  ", resp.toString());
 		if (svgElement.current) {
 			svgElement.current.innerHTML = resp;
 		}
@@ -51,33 +109,45 @@ function SignUp() {
 
 	const signUpForm = useForm({
 		defaultValues: {
-			firstName: "",
-			lastName: "",
-			email: "",
-			password: "",
-			confirmPassword: "",
+			firstName: user?.firstName,
+			lastName: user?.lastName,
+			email: user?.email,
 		},
-		// validators: {
-		// 	onChange: UserInputSchema,
-		// },
-		onSubmit: ({ value }) => {
-			console.log(value);
+		validators: {
+			onChange: ()=>{},
+		},
+		onSubmit: async ({ value }) => {
+			console.log("SignupPutttt", value);
+			const req = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/v1/user/`,
+				{
+					method: "PUT",
+					body: JSON.stringify({ ...value, svgText: avatar }),
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization":`Bearer ${authToken}`
+					},
+				}
+			);
+			console.log("SignupPuttttResponsee", req.json);
+
+			if (req.status === 200) {
+				// useNavigate('/login');
+			}
 		},
 	});
 
 	return (
 		<form
-			onSubmit={(e) => {
+			onSubmit={async (e) => {
 				e.preventDefault();
 				e.stopPropagation();
-				signUpForm.handleSubmit();
+				await signUpForm.handleSubmit();
 			}}
 			className="flex h-fit w-full mx-40 my-20 flex-col items-center space-y-4 border bg-sidebar px-7 py-9 backdrop:blur-2xl dark:bg-background"
 		>
-			<h1 className="text-xl">Welcome to John</h1>
-			<h3 className="text-sm text-muted-foreground">
-				Sign up to get started
-			</h3>
+			<h1 className="text-xl">Welcome, {user?.firstName}</h1>
+
 			<Separator />
 			<div className="mb-4 w-full flex flex-col gap-4 justify-center items-center h-full">
 				<Label className="justify-start flex w-full" htmlFor="avatar">
@@ -94,7 +164,8 @@ function SignUp() {
 							<RefreshCcw />
 						</Button>
 					</div>
-					{/* <svg ref={"svgElement"} className="" id="avatar" /> */}
+					<svg ref={svgElement} className="" id="avatar" />
+					{/* <div ref={svgRef} /> */}
 				</div>
 			</div>
 
@@ -172,6 +243,7 @@ function SignUp() {
 								className="bg-background"
 								value={field.state.value}
 								onBlur={field.handleBlur}
+								readOnly={true}
 								onChange={(e) =>
 									field.handleChange(e.target.value)
 								}
@@ -181,74 +253,17 @@ function SignUp() {
 					)}
 				/>
 			</div>
-			<div className="flex w-full gap-4">
-				<div className="flex w-full flex-col gap-4 ">
-					<signUpForm.Field
-						name="password"
-						children={(field) => (
-							<>
-								<Label
-									htmlFor={field.name}
-									className="flex w-full justify-start"
-								>
-									Password
-								</Label>
-								<Input
-									placeholder="qwerty123"
-									type="password"
-									id={field.name}
-									className="bg-background"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) =>
-										field.handleChange(e.target.value)
-									}
-								/>
-								<FieldInfo field={field} />
-							</>
-						)}
-					/>
-				</div>
-				<div className="flex w-full flex-col gap-4 ">
-					<signUpForm.Field
-						name="confirmPassword"
-						children={(field) => (
-							<>
-								<Label
-									htmlFor={field.name}
-									className="flex w-full justify-start"
-								>
-									Confirm Password
-								</Label>
-								<Input
-									placeholder="qwerty123"
-									type="password"
-									id={field.name}
-									className="bg-background"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) =>
-										field.handleChange(e.target.value)
-									}
-								/>
-								<FieldInfo field={field} />
-							</>
-						)}
-					/>
-				</div>
-			</div>
+
 			<div className="flex w-full">
-				<Button className="w-full hover:cursor-pointer">
-					Continue
-				</Button>
+				<Button className="w-full hover:cursor-pointer">Update</Button>
 			</div>
 			<Separator />
-			<h5 className="text-sm">
-				Already have an account?{" "}
-				<Link to="/auth/login" className="underline underline-offset-4">
-					Login!
-				</Link>
-			</h5>
 		</form>
 	);
+}
+
+function generateRandomSeed(length = 10) {
+	return Math.random()
+		.toString(36)
+		.substring(2, 2 + length);
 }

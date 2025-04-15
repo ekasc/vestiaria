@@ -194,7 +194,7 @@ function SignUp() {
 				}
 			})
 
-			if(req.status===200){
+			if(req.status===200 || req.status===201){
 				// useNavigate('/login');
 				return redirect('/login');
 			}
