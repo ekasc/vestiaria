@@ -10,8 +10,11 @@ import { Admin } from "./routes/admin/landing";
 import Auth from "./routes/auth";
 import { Profile } from "./routes/profile";
 import Shop from "./routes/shop";
-import { ROLE } from "./models/user";
 import Cart from "./routes/cart";
+import OrdersDashboard from "./routes/admin/orders";
+import ProductsDashboard from "./routes/admin/products";
+import { CategoryDashboard } from "./routes/admin/category";
+import { ROLE } from "./models/user";
 
 export default function Layout() {
 	return (
@@ -61,6 +64,26 @@ export default function Layout() {
 								element={
 									<ProtectedRoute requiredRole={ROLE.Admin}>
 										<Admin />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/admin/orders"
+								element={<OrdersDashboard />}
+							/>
+							<Route
+								path="/admin/category"
+								element={
+									<ProtectedRoute>
+										<CategoryDashboard />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/admin/products"
+								element={
+									<ProtectedRoute>
+										<ProductsDashboard />
 									</ProtectedRoute>
 								}
 							/>

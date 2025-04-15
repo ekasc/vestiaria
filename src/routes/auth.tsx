@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
-import { authSchema } from "@/models/schema";
+import { ResponseType } from "@/lib/utils";
+import { authSchema, UserInputSchema } from "@/models/schema";
 import { type AnyFieldApi, useForm } from "@tanstack/react-form";
-import { useEffect } from "react";
+import { RefreshCcw } from "lucide-react";
+import { createRef, useEffect, useState } from "react";
 import { Link } from "react-router";
 
 export default function Auth({ type }: { type: string }) {
@@ -17,11 +19,13 @@ export default function Auth({ type }: { type: string }) {
 
 	return (
 		<>
-			<AuroraText className="flex h-screen w-full items-center justify-center bg-background px-3 py-2 text-center text-3xl font-bold tracking-widest ">
-				<Link to="/" onClick={() => setOpen(true)}>
-					Vestiaria
-				</Link>
-			</AuroraText>
+			<Link
+				className="flex h-screen w-full items-center justify-center bg-background px-3 py-2 text-center text-3xl font-bold tracking-widest "
+				to="/"
+				onClick={() => setOpen(true)}
+			>
+				<AuroraText>Vestiaria</AuroraText>
+			</Link>
 			<div className="flex w-full items-center justify-center overflow-hidden border-l bg-background  dark:bg-transparent">
 				{type === "login" ? <Login /> : <SignUp />}
 			</div>
@@ -30,6 +34,7 @@ export default function Auth({ type }: { type: string }) {
 }
 
 function Login() {
+	// const { login } = useAuth();
 	const loginForm = useForm({
 		defaultValues: {
 			email: "",
@@ -38,8 +43,23 @@ function Login() {
 		validators: {
 			onChange: authSchema,
 		},
-		onSubmit: ({ value }) => {
-			console.log(value);
+		onSubmit: async ({ value }) => {
+			const req = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/v1/user/login`,
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+					method: "POST",
+					body: JSON.stringify(value),
+				},
+			);
+
+			const resp = (await req.json()) as ResponseType;
+			if (!resp.success) {
+				console.log(resp.message);
+				return;
+			}
 		},
 	});
 
@@ -50,7 +70,7 @@ function Login() {
 				e.stopPropagation();
 				loginForm.handleSubmit();
 			}}
-			className="absolute flex h-fit w-[400px] flex-col items-center space-y-4 border bg-sidebar px-7 py-9 backdrop:blur-2xl dark:bg-background"
+			className="flex h-fit w-[400px] flex-col items-center space-y-4 border bg-sidebar px-7 py-9 backdrop:blur-2xl dark:bg-background"
 		>
 			<h1 className="text-xl">Welcome back</h1>
 			<h3 className="text-sm text-muted-foreground">
@@ -111,11 +131,9 @@ function Login() {
 					)}
 				/>
 			</div>
-			<div className="flex w-full">
-				<Button className="w-full hover:cursor-pointer">
-					Continue
-				</Button>
-				<Button variant="link" className="w-full hover:cursor-pointer">
+			<div className="flex w-full flex-wrap gap-4">
+				<Button className="w-full flex-1">Continue</Button>
+				<Button variant="link" className="w-full flex-1" type="button">
 					Forgot your Password?
 				</Button>
 			</div>
@@ -134,13 +152,36 @@ function Login() {
 }
 
 function SignUp() {
+	const svgElement = createRef<SVGSVGElement>();
+	const [avatar, setAvatar] = useState<string | undefined>("");
+	async function getRandomAvatar() {
+		const req = await fetch(
+			`https://api.dicebear.com/9.x/pixel-art/svg/seed=${generateRandomSeed()}`,
+			{
+				method: "GET",
+			},
+		);
+		if (!req.ok) {
+			console.error("error occured");
+			return;
+		}
+		const resp = await req.text();
+		console.log(resp);
+		if (svgElement.current) {
+			svgElement.current.innerHTML = resp;
+		}
+	}
+
 	const signUpForm = useForm({
 		defaultValues: {
+			firstName: "",
+			lastName: "",
 			email: "",
 			password: "",
+			confirmPassword: "",
 		},
 		validators: {
-			onChange: authSchema,
+			onChange: UserInputSchema,
 		},
 		onSubmit: ({ value }) => {
 			console.log(value);
@@ -161,6 +202,81 @@ function SignUp() {
 				Sign up to get started
 			</h3>
 			<Separator />
+			<div className="mb-4 w-full flex flex-col gap-4 justify-center items-center h-full">
+				<Label className="justify-start flex w-full" htmlFor="avatar">
+					Profile avatar
+				</Label>
+				<div className="border relative hover:border-white transition-all">
+					<div className="absolute justify-end flex w-full">
+						<Button
+							className=""
+							size="icon"
+							onClick={() => getRandomAvatar()}
+							type="button"
+						>
+							<RefreshCcw />
+						</Button>
+					</div>
+					<svg ref={svgElement} className="" id="avatar" />
+				</div>
+			</div>
+
+			<div className="flex w-full gap-4">
+				<div className="flex w-full flex-col gap-4 ">
+					<signUpForm.Field
+						name="firstName"
+						children={(field) => (
+							<>
+								<Label
+									htmlFor={field.name}
+									className="flex w-full justify-start"
+								>
+									First Name
+								</Label>
+								<Input
+									placeholder="John"
+									type="text"
+									id={field.name}
+									className="bg-background"
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) =>
+										field.handleChange(e.target.value)
+									}
+								/>
+								<FieldInfo field={field} />
+							</>
+						)}
+					/>
+				</div>
+				<div className="flex w-full flex-col gap-4 ">
+					<signUpForm.Field
+						name="lastName"
+						children={(field) => (
+							<>
+								<Label
+									htmlFor={field.name}
+									className="flex w-full justify-start"
+								>
+									Last Name
+								</Label>
+								<Input
+									placeholder="Doe"
+									type="text"
+									id={field.name}
+									className="bg-background"
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) =>
+										field.handleChange(e.target.value)
+									}
+								/>
+								<FieldInfo field={field} />
+							</>
+						)}
+					/>
+				</div>
+			</div>
 			<div className="flex w-full flex-col gap-4">
 				<signUpForm.Field
 					name="email"
@@ -188,32 +304,61 @@ function SignUp() {
 					)}
 				/>
 			</div>
-			<div className="flex w-full flex-col gap-4">
-				<signUpForm.Field
-					name="password"
-					children={(field) => (
-						<>
-							<Label
-								htmlFor={field.name}
-								className="flex w-full justify-start"
-							>
-								Password
-							</Label>
-							<Input
-								placeholder="qwerty1234"
-								type="password"
-								id={field.name}
-								className="bg-background"
-								value={field.state.value}
-								onBlur={field.handleBlur}
-								onChange={(e) =>
-									field.handleChange(e.target.value)
-								}
-							/>
-							<FieldInfo field={field} />
-						</>
-					)}
-				/>
+			<div className="flex w-full gap-4">
+				<div className="flex w-full flex-col gap-4 ">
+					<signUpForm.Field
+						name="password"
+						children={(field) => (
+							<>
+								<Label
+									htmlFor={field.name}
+									className="flex w-full justify-start"
+								>
+									Password
+								</Label>
+								<Input
+									placeholder="qwerty123"
+									type="password"
+									id={field.name}
+									className="bg-background"
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) =>
+										field.handleChange(e.target.value)
+									}
+								/>
+								<FieldInfo field={field} />
+							</>
+						)}
+					/>
+				</div>
+				<div className="flex w-full flex-col gap-4 ">
+					<signUpForm.Field
+						name="confirmPassword"
+						children={(field) => (
+							<>
+								<Label
+									htmlFor={field.name}
+									className="flex w-full justify-start"
+								>
+									Confirm Password
+								</Label>
+								<Input
+									placeholder="qwerty123"
+									type="password"
+									id={field.name}
+									className="bg-background"
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) =>
+										field.handleChange(e.target.value)
+									}
+								/>
+								<FieldInfo field={field} />
+							</>
+						)}
+					/>
+				</div>
 			</div>
 			<div className="flex w-full">
 				<Button className="w-full hover:cursor-pointer">
@@ -244,4 +389,10 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
 			{field.state.meta.isValidating ? "Validating..." : null}
 		</>
 	);
+}
+
+function generateRandomSeed(length = 10) {
+	return Math.random()
+		.toString(36)
+		.substring(2, 2 + length);
 }

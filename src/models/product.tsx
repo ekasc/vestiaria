@@ -6,12 +6,19 @@ export type ProductVariant = {
 };
 
 // Main product model: now includes an array of variants.
-export type ProductType = {
+export interface ProductType {
 	id: string;
-	title: string;
+	name: string;
 	price: number;
 	category: string;
 	description: string;
 	image: string;
 	variants: ProductVariant[];
-};
+	sku: string;
+	createdAt: Date;
+	updatedAt: Date;
+	isActive: boolean;
+	rating?: number;
+	discount: number;
+	stock: number;
+}

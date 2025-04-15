@@ -33,11 +33,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		email: "djnjkdnajs",
 		token: "12321:assdjsndkjsandan",
 		role: ROLE.Admin,
+		password: "",
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		isActive: true,
 	};
 
 	useEffect(() => {
-		// setUser(userResponseTest);
-		// console.log("in auth provider");
+		setUser(userResponseTest);
+		console.log("in auth provider");
 		const storedUser = localStorage.getItem("user");
 		const storedToken = localStorage.getItem("token");
 		console.log("storedToken1: ", storedToken);
@@ -59,6 +63,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			token: "xycedjnskdnkjsnd",
 			role: ROLE.Admin,
 			password,
+			isActive: true,
+			createdAt: new Date(),
+			updatedAt: new Date(),
 		};
 
 		if (email == "customer") {
@@ -68,10 +75,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				lastName: "Kumar",
 				email: email,
 				token: "12321:assdjsndkjsandan",
+				isActive: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
 				role: ROLE.Customer,
 				password,
 			};
 		}
+		// const req = await fetch(
+		// 	`${import.meta.env.VITE_API_URL}/api/v1/user/login`,
+		// 	{
+		// 		headers: {
+		// 			"Content-Type": "application/json",
+		// 		},
+		// 		method: "POST",
+		// 		body: JSON.stringify(value),
+		// 	},
+		// );
+
+		// const resp = (await req.json()) as ResponseType;
+		// if (!resp.success) {
+		// 	console.log(resp.message);
+		// 	return;
+		// }
 
 		setUser(userResponse);
 		setAuthToken(userResponse.token);

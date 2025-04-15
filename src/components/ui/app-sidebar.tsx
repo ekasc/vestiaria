@@ -10,21 +10,22 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
-import { ROLE } from "@/models/user";
 import {
+    ChartColumnStacked,
     Gem,
     PiggyBank,
     Settings,
     Shirt,
     ShoppingBag,
     ShoppingCart,
-    SmartphoneCharging,
     User,
+    Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { AuroraText } from "./aurora-text";
 import { Button } from "./button";
+import { ROLE } from "@/models/user";
 
 interface MenuItem {
 	title: string;
@@ -47,13 +48,18 @@ export function AppSidebar() {
 		} else {
 			setOpen(true);
 		}
-		console.log("isAuthenticated: ",isAuthenticated);
+		console.log("isAuthenticated: ", isAuthenticated);
 		if (isAuthenticated && user?.role == ROLE.Admin) {
 			const a = [
 				{
 					title: "Admin Home",
 					url: "/admin",
 					icon: Settings,
+				},
+				{
+					title: "Category",
+					url: "/admin/category",
+					icon: ChartColumnStacked,
 				},
 				{
 					title: "Products",
@@ -64,6 +70,11 @@ export function AppSidebar() {
 					title: "Orders",
 					url: "/admin/orders",
 					icon: PiggyBank,
+				},
+				{
+					title: "Users",
+					url: "/admin/users",
+					icon: Users,
 				},
 			];
 			setMenuItems(a);
@@ -89,11 +100,6 @@ export function AppSidebar() {
 					url: "/shop/category/jewelery",
 					icon: Gem,
 				},
-				{
-					title: "Electronics",
-					url: "/shop/category/electronics",
-					icon: SmartphoneCharging,
-				},
 			];
 			setMenuItems(a);
 		}
@@ -102,12 +108,12 @@ export function AppSidebar() {
 	return (
 		<Sidebar variant="floating">
 			<SidebarContent className="">
-				<a
-					href="/"
-					className="text-3xl w-full font-bold tracking-widest px-3 py-2 border-b"
+				<Link
+					to="/"
+					className="text-3xl w-full font-bold tracking-widest px-3 py-2 border-b bg-background flex items-center text-center"
 				>
 					<AuroraText>Vestiaria</AuroraText>
-				</a>
+				</Link>
 				<SidebarGroupLabel>Collections</SidebarGroupLabel>
 				<SidebarGroupContent>
 					<SidebarMenu>
