@@ -8,7 +8,7 @@ import { useAuth } from "./hooks/use-auth";
 import { AuthProvider } from "./lib/authprovider";
 import { Admin } from "./routes/admin/landing";
 import Auth from "./routes/auth";
-import { Profile } from "./routes/profile";
+import Profile  from "./routes/profile";
 import Shop from "./routes/shop";
 import Cart from "./routes/cart";
 import OrdersDashboard from "./routes/admin/orders";

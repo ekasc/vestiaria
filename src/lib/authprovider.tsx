@@ -1,5 +1,6 @@
 import { ROLE, User } from "@/models/user";
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { ResponseType } from "./utils";
 
 interface AuthContextType {
 	user: User | null;
@@ -8,7 +9,10 @@ interface AuthContextType {
 	login: (
 		email: string,
 		password: string,
-	) => Promise<{ user: User | null; token: string | null }>;
+	) => Promise<{
+    user: User;
+    token: string;
+} | undefined>;
 	logout: () => void;
 }
 
@@ -26,21 +30,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const isAuthenticated = !!authToken;
 
-	const userResponseTest: User = {
-		id: 1,
-		firstName: "Rahul",
-		lastName: "Kumar",
-		email: "djnjkdnajs",
-		token: "12321:assdjsndkjsandan",
-		role: ROLE.Admin,
-		password: "",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		isActive: true,
-	};
+	// const userResponseTest: User = {
+	// 	id: 1,
+	// 	firstName: "Rahul",
+	// 	lastName: "Kumar",
+	// 	email: "djnjkdnajs",
+	// 	token: "12321:assdjsndkjsandan",
+	// 	role: ROLE.Admin,
+	// 	password: "",
+	// 	createdAt: new Date(),
+	// 	updatedAt: new Date(),
+	// 	isActive: true,
+	// };
 
 	useEffect(() => {
-		setUser(userResponseTest);
+		//setUser(userResponseTest);
 		console.log("in auth provider");
 		const storedUser = localStorage.getItem("user");
 		const storedToken = localStorage.getItem("token");
@@ -55,57 +59,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	async function login(email: string, password: string) {
 		//API call to login;
 
-		let userResponse: User = {
-			id: 2,
-			firstName: "admin",
-			lastName: "user",
-			email: email,
-			token: "xycedjnskdnkjsnd",
-			role: ROLE.Admin,
-			password,
-			isActive: true,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		};
+		// let userResponse: User = {
+		// 	id: 2,
+		// 	firstName: "admin",
+		// 	lastName: "user",
+		// 	email: email,
+		// 	token: "xycedjnskdnkjsnd",
+		// 	role: ROLE.Admin,
+		// 	password,
+		// 	isActive: true,
+		// 	createdAt: new Date(),
+		// 	updatedAt: new Date(),
+		// };
 
-		if (email == "customer") {
-			userResponse = {
-				id: 1,
-				firstName: "Rahul",
-				lastName: "Kumar",
-				email: email,
-				token: "12321:assdjsndkjsandan",
-				isActive: true,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				role: ROLE.Customer,
-				password,
-			};
-		}
-		// const req = await fetch(
-		// 	`${import.meta.env.VITE_API_URL}/api/v1/user/login`,
-		// 	{
-		// 		headers: {
-		// 			"Content-Type": "application/json",
-		// 		},
-		// 		method: "POST",
-		// 		body: JSON.stringify(value),
-		// 	},
-		// );
-
-		// const resp = (await req.json()) as ResponseType;
-		// if (!resp.success) {
-		// 	console.log(resp.message);
-		// 	return;
+		// if (email == "customer") {
+		// 	userResponse = {
+		// 		id: 1,
+		// 		firstName: "Rahul",
+		// 		lastName: "Kumar",
+		// 		email: email,
+		// 		token: "12321:assdjsndkjsandan",
+		// 		isActive: true,
+		// 		createdAt: new Date(),
+		// 		updatedAt: new Date(),
+		// 		role: ROLE.Customer,
+		// 		password,
+		// 	};
 		// }
+		const req = await fetch(
+			`${import.meta.env.VITE_API_URL}/api/v1/user/login`,
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+				method: "POST",
+				body: JSON.stringify({email,password}),
+			},
+		);
 
-		setUser(userResponse);
-		setAuthToken(userResponse.token);
+		const resp = (await req.json()) as ResponseType;
+		if (!resp.success) {
+			console.log(resp.message);
+			return;
+		}
+		const userData= resp.data as User;
 
-		localStorage.setItem("user", JSON.stringify(userResponse));
-		localStorage.setItem("token", userResponse.token);
+		setUser(userData);
+		setAuthToken(userData.token);
 
-		return { user: userResponse, token: userResponse.token };
+		localStorage.setItem("user", JSON.stringify(userData));
+		localStorage.setItem("token", userData.token);
+
+		return { user: userData, token: userData.token };
 	}
 
 	const logout = () => {

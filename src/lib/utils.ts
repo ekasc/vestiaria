@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export interface ResponseType {
 	success: boolean;
 	message: string;
-	data: any[];
+	data: any;
 }
 
 export type CategoryResponseType = {

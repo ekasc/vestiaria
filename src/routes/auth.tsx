@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/use-auth";
 import { ResponseType } from "@/lib/utils";
 import { authSchema, UserInputSchema } from "@/models/schema";
+import { ROLE } from "@/models/user";
 import { type AnyFieldApi, useForm } from "@tanstack/react-form";
 import { RefreshCcw } from "lucide-react";
 import { createRef, useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, Navigate, redirect, useNavigate } from "react-router";
 
 export default function Auth({ type }: { type: string }) {
 	const { setOpen } = useSidebar();
@@ -34,7 +36,7 @@ export default function Auth({ type }: { type: string }) {
 }
 
 function Login() {
-	// const { login } = useAuth();
+	const { login } = useAuth();
 	const loginForm = useForm({
 		defaultValues: {
 			email: "",
@@ -44,22 +46,18 @@ function Login() {
 			onChange: authSchema,
 		},
 		onSubmit: async ({ value }) => {
-			const req = await fetch(
-				`${import.meta.env.VITE_API_URL}/api/v1/user/login`,
-				{
-					headers: {
-						"Content-Type": "application/json",
-					},
-					method: "POST",
-					body: JSON.stringify(value),
-				},
-			);
-
-			const resp = (await req.json()) as ResponseType;
-			if (!resp.success) {
-				console.log(resp.message);
-				return;
+		
+			const res= await login(value.email,value.password);
+			// return redirect("/")
+			if(res){
+				console.log("LoginResponse",res.user, res.user.role);
+			if(res.user.role==ROLE.Admin){
+					window.location.href="/admin"
+				}else{
+					window.location.href="/"
+				}
 			}
+			// return <Navigate to="/" replace/>
 		},
 	});
 
@@ -166,6 +164,7 @@ function SignUp() {
 			return;
 		}
 		const resp = await req.text();
+		setAvatar(resp);
 		console.log(resp);
 		if (svgElement.current) {
 			svgElement.current.innerHTML = resp;
@@ -183,8 +182,22 @@ function SignUp() {
 		validators: {
 			onChange: UserInputSchema,
 		},
-		onSubmit: ({ value }) => {
+		onSubmit: async({ value }) => {
 			console.log(value);
+			//
+
+			const req= await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/register`, {
+				method:"POST",
+				body:JSON.stringify({...value, svgText:avatar}),
+				headers:{
+					"Content-Type":"application/json"
+				}
+			})
+
+			if(req.status===200){
+				// useNavigate('/login');
+				return redirect('/login');
+			}
 		},
 	});
 
