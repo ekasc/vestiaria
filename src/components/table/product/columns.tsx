@@ -1,44 +1,47 @@
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProductUpdateDialog } from "@/components/ui/product-dialogs";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ProductResponseType } from "@/lib/utils";
+import { ProductType } from "@/models/product";
 import { ProductSchema } from "@/models/schema";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Ellipsis, PencilIcon, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { z } from "zod";
 
-export const columns: ColumnDef<z.infer<typeof ProductSchema>>[] = [
+export const columns: ColumnDef<ProductType>[] = [
 	{
-		accessorKey: "id",
+		accessorKey: "_id",
 		header: () => null,
 		cell: (info) => Number(info.row.id) + 1,
 	},
@@ -55,9 +58,12 @@ export const columns: ColumnDef<z.infer<typeof ProductSchema>>[] = [
 							</div>
 						</TooltipTrigger>
 						<TooltipContent>
-							<a target="_blank" href={row.original.image}>
+							<a
+								target="_blank"
+								href={row.original.image?.webkitRelativePath}
+							>
 								<img
-									src={row.original.image}
+									src={row.original.image?.webkitRelativePath}
 									alt={row.original.name}
 								/>
 							</a>
@@ -82,6 +88,14 @@ export const columns: ColumnDef<z.infer<typeof ProductSchema>>[] = [
 	{
 		accessorKey: "category",
 		header: () => <div className="font-bold">Category</div>,
+		cell: ({ row }) => {
+			console.log(row.getValue("category"))
+			return (
+				<div className="flex items-center">
+					<div className="font-medium">{row.getValue("category")}</div>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "description",
@@ -102,6 +116,8 @@ export const columns: ColumnDef<z.infer<typeof ProductSchema>>[] = [
 		accessorKey: "createdAt",
 		header: () => <div className="font-bold">Created At</div>,
 		cell: ({ row }) => {
+			if (row.getValue("createdAt") == null)
+				return <div>Not Available</div>;
 			const time: Date = new Date(row.getValue("createdAt"));
 			const formatted = new Intl.DateTimeFormat("en-IN", {
 				hour: "2-digit",
@@ -117,6 +133,8 @@ export const columns: ColumnDef<z.infer<typeof ProductSchema>>[] = [
 		accessorKey: "updatedAt",
 		header: () => <div className="font-bold">Updated At</div>,
 		cell: ({ row }) => {
+			if (row.getValue("updatedAt") == null)
+				return <div>Not Available</div>;
 			const time: Date = new Date(row.getValue("updatedAt"));
 			const formatted = new Intl.DateTimeFormat("en-IN", {
 				hour: "2-digit",
@@ -154,7 +172,25 @@ export const columns: ColumnDef<z.infer<typeof ProductSchema>>[] = [
 
 export type Product = z.infer<typeof ProductSchema>;
 
-function RowActions({ row }: { row: Row<Product> }) {
+function RowActions({ row }: { row: Row<ProductType> }) {
+	async function deleteProduct() {
+		const req = await fetch(
+			`${import.meta.env.VITE_API_URL}/api/v1/products/${row.getValue("_id")}`,
+			{
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			},
+		);
+		const res = await req.json();
+		if (res.status == 200) {
+			toast("Product deleted successfully");
+		} else {
+			toast("Failed to delete product");
+		}
+	}
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -210,7 +246,9 @@ function RowActions({ row }: { row: Row<Product> }) {
 						</AlertDialogHeader>
 						<AlertDialogFooter>
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction>Continue</AlertDialogAction>
+							<AlertDialogAction onClick={deleteProduct}>
+								Continue
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>

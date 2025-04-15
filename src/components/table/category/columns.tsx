@@ -30,7 +30,13 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { Ellipsis, PencilIcon, Trash2 } from "lucide-react";
 import { z } from "zod";
 
-export const columns: ColumnDef<z.infer<typeof CategorySchema>>[] = [
+export type Category = {
+	name: string;
+	createdAt: Date;
+	updatedAt: Date;
+};
+
+export const columns: ColumnDef<Category>[] = [
 	{
 		accessorKey: "id",
 		header: () => null,
@@ -44,6 +50,8 @@ export const columns: ColumnDef<z.infer<typeof CategorySchema>>[] = [
 		accessorKey: "createdAt",
 		header: () => <div className="font-bold">Created At</div>,
 		cell: ({ row }) => {
+			if (row.getValue("createdAt") == null)
+				return <div>Not Available</div>;
 			const time: Date = new Date(row.getValue("createdAt"));
 			const formatted = new Intl.DateTimeFormat("en-IN", {
 				hour: "2-digit",
@@ -59,6 +67,8 @@ export const columns: ColumnDef<z.infer<typeof CategorySchema>>[] = [
 		accessorKey: "updatedAt",
 		header: () => <div className="font-bold">Updated At</div>,
 		cell: ({ row }) => {
+			if (row.getValue("updatedAt") == null)
+				return <div>Not Available</div>;
 			const time: Date = new Date(row.getValue("updatedAt"));
 			const formatted = new Intl.DateTimeFormat("en-IN", {
 				hour: "2-digit",
@@ -78,7 +88,7 @@ export const columns: ColumnDef<z.infer<typeof CategorySchema>>[] = [
 	},
 ];
 
-export type Category = z.infer<typeof CategorySchema>;
+export type CategorySchema = z.infer<typeof CategorySchema>;
 
 export const categories: Category[] = [
 	{

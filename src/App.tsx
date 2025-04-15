@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { Button } from "./components/ui/button";
 import ProductCardGrid from "./components/ui/product-card";
 import "./index.css";
-import { ProductType } from "./lib/utils";
+import { ProductType } from "./models/product";
 
 function App() {
 	return (

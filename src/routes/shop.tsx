@@ -1,5 +1,5 @@
 import ProductCardGrid from "@/components/ui/product-card";
-import { ProductType } from "@/lib/utils";
+import { ProductType } from "@/models/product";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -12,13 +12,18 @@ export default function Shop() {
 			let req: AxiosResponse<ProductType[], any>;
 			if (category) {
 				req = await axios.get(
-					`https://fakestoreapi.com/products/category/${category}`,
+					`${import.meta.env.VITE_API_URL}/${category}`,
 				);
 				const resp = req.data;
 				setProduct(resp);
 				return;
 			}
-			req = await axios.get("https://fakestoreapi.com/products");
+			req = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/products`, {
+				headers: {
+					"Content-Type": "application/json",
+					"ngrok-skip-browser-warning": "true",
+				},
+			});
 			const resp = req.data;
 			setProduct(resp);
 			console.log(resp);

@@ -14,17 +14,15 @@ export default function Product() {
 	useEffect(() => {
 		async function getData() {
 			const req = await axios.get(
-				`https://fakestoreapi.com/products/${productId}`,
+				`${import.meta.env.VITE_API_URL}/product/${productId}`,
 			);
 			const resp = (await req.data) as ProductType;
 			const allProducts = await axios
-				.get<
-					ProductType[]
-				>(`https://fakestoreapi.com/products/category/${resp.category}?limit=9`)
+				.get<ProductType[]>(`${import.meta.env.VITE_API_URL}/product`)
 				.then((i) => {
 					return i.data;
 				});
-			resp.variants = testProduct.variants;
+			// resp.variants = testProduct.variants;
 			setProduct(resp);
 			const random: ProductType[] = [];
 			const count = new Set<number>();
@@ -33,7 +31,7 @@ export default function Product() {
 					break;
 				}
 				const x = Math.floor(Math.random() * allProducts.length);
-				if (allProducts[x].id == x.toString()) {
+				if (allProducts[x]._id == x.toString()) {
 					break;
 				}
 				if (!count.has(x)) {

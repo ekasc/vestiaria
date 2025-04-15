@@ -12,6 +12,8 @@ export interface ResponseType {
 	data: any;
 }
 
+export type ProductResponseType = ProductType;
+
 export type CategoryResponseType = {
 	image: string;
 	name: string;
@@ -27,7 +29,11 @@ export const testProduct: ProductType[] = [
 		price: 156.76,
 		category: "Electronics",
 		description: "Perfect for everyday use.",
-		image: "https://placehold.co/300x300.png?text=Classic+White+T-Shirt",
+		image: new File(
+			["dummy data for Classic White T-Shirt"],
+			"Classic White T-Shirt.png",
+			{ type: "image/png" },
+		),
 		variants: [
 			{ size: "350ml", color: "White", stock: 23 },
 			{ size: "350ml", color: "Blue", stock: 33 },
@@ -47,7 +53,11 @@ export const testProduct: ProductType[] = [
 		price: 146.26,
 		category: "Stationery",
 		description: "Perfect for everyday use.",
-		image: "https://placehold.co/300x300.png?text=Wireless+Headphones",
+		image: new File(
+			["dummy data for Wireless Headphones"],
+			"Wireless Headphones.png",
+			{ type: "image/png" },
+		),
 		variants: [
 			{ size: "Standard", color: "White", stock: 10 },
 			{ size: "XL", color: "Pink", stock: 41 },
@@ -66,7 +76,11 @@ export const testProduct: ProductType[] = [
 		price: 157.71,
 		category: "Stationery",
 		description: "Top rated by users.",
-		image: "https://placehold.co/300x300.png?text=Ceramic+Coffee+Mug",
+		image: new File(
+			["dummy data for Ceramic Coffee Mug"],
+			"Ceramic Coffee Mug.png",
+			{ type: "image/png" },
+		),
 		variants: [
 			{ size: "M", color: "Red", stock: 28 },
 			{ size: "Standard", color: "Blue", stock: 15 },
@@ -85,7 +99,11 @@ export const testProduct: ProductType[] = [
 		price: 119.94,
 		category: "Travel Accessories",
 		description: "Best in class performance.",
-		image: "https://placehold.co/300x300.png?text=Bluetooth+Speaker",
+		image: new File(
+			["dummy data for Bluetooth Speaker"],
+			"Bluetooth Speaker.png",
+			{ type: "image/png" },
+		),
 		variants: [
 			{ size: "350ml", color: "Black", stock: 38 },
 			{ size: "Standard", color: "Red", stock: 26 },
@@ -104,7 +122,9 @@ export const testProduct: ProductType[] = [
 		price: 21.48,
 		category: "Fitness",
 		description: "Eco-friendly and stylish.",
-		image: "https://placehold.co/300x300.png?text=Gaming+Mouse",
+		image: new File(["dummy data for Gaming Mouse"], "Gaming Mouse.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "S", color: "Pink", stock: 9 },
 			{ size: "M", color: "Blue", stock: 28 },
@@ -124,7 +144,9 @@ export const testProduct: ProductType[] = [
 		price: 64.99,
 		category: "Electronics",
 		description: "High quality and durable.",
-		image: "https://placehold.co/300x300.png?text=Laptop+Stand",
+		image: new File(["dummy data for Laptop Stand"], "Laptop Stand.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "Black", stock: 20 },
 			{ size: "Standard", color: "Gray", stock: 18 },
@@ -143,7 +165,9 @@ export const testProduct: ProductType[] = [
 		price: 18.75,
 		category: "Fitness",
 		description: "Eco-friendly and stylish.",
-		image: "https://placehold.co/300x300.png?text=Water+Bottle",
+		image: new File(["dummy data for Water Bottle"], "Water Bottle.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "500ml", color: "Blue", stock: 22 },
 			{ size: "500ml", color: "Green", stock: 25 },
@@ -162,7 +186,9 @@ export const testProduct: ProductType[] = [
 		price: 39.99,
 		category: "Home & Kitchen",
 		description: "Perfect for everyday use.",
-		image: "https://placehold.co/300x300.png?text=LED+Desk+Lamp",
+		image: new File(["dummy data for LED Desk Lamp"], "LED Desk Lamp.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "White", stock: 12 },
 			{ size: "Standard", color: "Black", stock: 10 },
@@ -181,7 +207,9 @@ export const testProduct: ProductType[] = [
 		price: 14.25,
 		category: "Stationery",
 		description: "Top rated by users.",
-		image: "https://placehold.co/300x300.png?text=Notebook+Set",
+		image: new File(["dummy data for Notebook Set"], "Notebook Set.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "Red", stock: 30 },
 			{ size: "Standard", color: "Blue", stock: 25 },
@@ -200,7 +228,11 @@ export const testProduct: ProductType[] = [
 		price: 29.95,
 		category: "Electronics",
 		description: "Best in class performance.",
-		image: "https://placehold.co/300x300.png?text=Portable+Charger",
+		image: new File(
+			["dummy data for Portable Charger"],
+			"Portable Charger.png",
+			{ type: "image/png" },
+		),
 		variants: [
 			{ size: "Standard", color: "Black", stock: 20 },
 			{ size: "Standard", color: "White", stock: 15 },
@@ -219,7 +251,9 @@ export const testProduct: ProductType[] = [
 		price: 49.99,
 		category: "Travel Accessories",
 		description: "Durable and functional.",
-		image: "https://placehold.co/300x300.png?text=Backpack",
+		image: new File(["dummy data for Backpack"], "Backpack.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "Black", stock: 10 },
 			{ size: "Standard", color: "Gray", stock: 12 },
@@ -238,7 +272,11 @@ export const testProduct: ProductType[] = [
 		price: 15.0,
 		category: "Home & Kitchen",
 		description: "Creates a relaxing ambiance.",
-		image: "https://placehold.co/300x300.png?text=Scented+Candle",
+		image: new File(
+			["dummy data for Scented Candle"],
+			"Scented Candle.png",
+			{ type: "image/png" },
+		),
 		variants: [
 			{ size: "350ml", color: "White", stock: 8 },
 			{ size: "350ml", color: "Pink", stock: 14 },
@@ -257,7 +295,9 @@ export const testProduct: ProductType[] = [
 		price: 9.99,
 		category: "Electronics",
 		description: "Slim and protective design.",
-		image: "https://placehold.co/300x300.png?text=Phone+Case",
+		image: new File(["dummy data for Phone Case"], "Phone Case.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "Black", stock: 40 },
 			{ size: "Standard", color: "Blue", stock: 35 },
@@ -276,7 +316,9 @@ export const testProduct: ProductType[] = [
 		price: 12.99,
 		category: "Apparel",
 		description: "Comfortable everyday wear.",
-		image: "https://placehold.co/300x300.png?text=Socks+Pack",
+		image: new File(["dummy data for Socks Pack"], "Socks Pack.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "M", color: "White", stock: 30 },
 			{ size: "L", color: "Black", stock: 20 },
@@ -295,7 +337,9 @@ export const testProduct: ProductType[] = [
 		price: 22.49,
 		category: "Travel Accessories",
 		description: "Perfect for long flights.",
-		image: "https://placehold.co/300x300.png?text=Travel+Pillow",
+		image: new File(["dummy data for Travel Pillow"], "Travel Pillow.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "Blue", stock: 18 },
 			{ size: "Standard", color: "Gray", stock: 15 },
@@ -314,7 +358,9 @@ export const testProduct: ProductType[] = [
 		price: 34.99,
 		category: "Fitness",
 		description: "High grip and lightweight.",
-		image: "https://placehold.co/300x300.png?text=Yoga+Mat",
+		image: new File(["dummy data for Yoga Mat"], "Yoga Mat.png", {
+			type: "image/png",
+		}),
 		variants: [
 			{ size: "Standard", color: "Green", stock: 25 },
 			{ size: "Standard", color: "Black", stock: 20 },
@@ -328,7 +374,6 @@ export const testProduct: ProductType[] = [
 		stock: 45,
 	},
 ];
-
 interface Exif {
 	make: string;
 	model: string;

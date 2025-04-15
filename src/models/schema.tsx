@@ -47,8 +47,6 @@ export const authSchema = z
 export const CategorySchema = z
 	.object({
 		name: z.string().min(1, "Category name is required"),
-		createdAt: z.date(),
-		updatedAt: z.date(),
 	})
 	.required();
 
@@ -60,20 +58,25 @@ export const VariantSchema = z
 	})
 	.required();
 
+export const ImageSchema = z
+	.instanceof(File, { message: "Please provide an image file." })
+	.refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+	.refine(
+		(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+		"Only .jpg, .jpeg, .png and .webp formats are supported.",
+	)
+	.optional();
+
 export const ProductSchema = z.object({
 	name: z.string().min(1, "Product name is required"),
 	price: z.number().min(1, "Price is required"),
 	category: z.string().min(1, "Category is required"),
-	description: z.string().min(1, "Description is required"),
-	image: z.string().min(1, "Image is required"),
-	variants: z.array(VariantSchema).min(1, "At least one variant is required"),
+	description: z.string(),
+	image: ImageSchema,
+	variants: z.array(VariantSchema),
 	sku: z.string().min(1, "SKU is required"),
-	createdAt: z.date(),
-	updatedAt: z.date(),
 	isActive: z.boolean(),
-	rating: z.number().optional(),
 	discount: z.number().min(1, "Discount is required"),
-	stock: z.number().min(1, "Stock is required"),
 });
 
 export type ProductSchemaType = z.infer<typeof ProductSchema>;
@@ -82,12 +85,16 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
 	return (
 		<>
 			{field.state.meta.isTouched && field.state.meta.errors.length ? (
-				<em className="text-sm text-destructive">
+				<em className="text-sm text-destructive dark:text-red-500">
 					{field.state.meta.errors
 						.map((err) => err.message)
-						.join(",")}
+						.join(", ")}
 				</em>
-			) : null}
+			) : (
+				<div className="text-transparent text-sm h-fit">
+					errors here
+				</div>
+			)}
 			{field.state.meta.isValidating ? "Validating..." : null}
 		</>
 	);

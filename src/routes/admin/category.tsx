@@ -19,27 +19,36 @@ import { CategorySchema, FieldInfo } from "@/models/schema";
 import { useForm } from "@tanstack/react-form";
 import { Row } from "@tanstack/react-table";
 import { PlusIcon } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 async function onSubmit(value: string) {
+	console.log(value);
 	const req = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/category`, {
 		headers: {
 			"Content-Type": "application/json",
+			"ngrok-skip-browser-warning": "true",
 		},
 		method: "POST",
-		body: JSON.stringify({ data: value }),
+		body: JSON.stringify({ name: value, image: null }),
 	});
 
-	if (req.status != 200) {
+	if (req.status != 201) {
 		console.log(req.statusText);
+		toast(`Something went wrong: ${req.statusText}`, { duration: 3000 });
 		return;
 	}
 
 	const resp = (await req.json()) as ResponseType;
-	console.log(resp.data);
+	if (!resp.success) {
+		toast("Something went wrong", { duration: 3000 });
+		return;
+	}
+	toast("New category added!", { duration: 5000 });
 }
 
 export function CategoryDashboard() {
+	const [categories, setCategories] = useState<Category[]>([]);
 	useEffect(() => {
 		async function fetchData() {
 			const req = await fetch(
@@ -47,6 +56,7 @@ export function CategoryDashboard() {
 				{
 					headers: {
 						"Content-Type": "application/json",
+						"ngrok-skip-browser-warning": "true",
 					},
 					method: "GET",
 				},
@@ -58,7 +68,9 @@ export function CategoryDashboard() {
 			}
 
 			const resp = (await req.json()) as ResponseType;
-			console.log(resp.data);
+			const data = resp.data as Category;
+			console.log(data);
+			setCategories(data);
 		}
 		fetchData();
 	}, []);
@@ -96,14 +108,17 @@ export function CategoryAddDialog({
 	onSubmit,
 }: {
 	className?: string;
-	onSubmit: (name: string) => Promise<void>;
+	onSubmit: (name: string) => Promise<any>;
 }) {
 	const categoryForm = useForm({
 		defaultValues: {
 			name: "",
 		},
 		validators: { onChange: CategorySchema },
-		onSubmit: (values) => onSubmit(values.value.name),
+		onSubmit: (values) => {
+			console.log(values.value);
+			onSubmit(values.value.name);
+		},
 	});
 	return (
 		<>
@@ -123,6 +138,7 @@ export function CategoryAddDialog({
 								<Label htmlFor={field.name}>Name</Label>
 								<Input
 									id={field.name}
+									value={field.state.value}
 									onChange={(e) =>
 										field.handleChange(e.target.value)
 									}
@@ -135,7 +151,17 @@ export function CategoryAddDialog({
 				</div>
 
 				<div className="flex w-full justify-end">
-					<Button type="submit">Submit</Button>
+					<categoryForm.Subscribe
+						selector={(state) => [
+							state.canSubmit,
+							state.isSubmitting,
+						]}
+						children={([_, isSubmitting]) => (
+							<Button type="submit">
+								{isSubmitting ? "..." : "Submit"}
+							</Button>
+						)}
+					/>
 				</div>
 			</form>
 		</>

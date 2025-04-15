@@ -8,13 +8,14 @@ import { useAuth } from "./hooks/use-auth";
 import { AuthProvider } from "./lib/authprovider";
 import { Admin } from "./routes/admin/landing";
 import Auth from "./routes/auth";
-import Profile  from "./routes/profile";
+import Profile from "./routes/profile";
 import Shop from "./routes/shop";
 import Cart from "./routes/cart";
 import OrdersDashboard from "./routes/admin/orders";
 import ProductsDashboard from "./routes/admin/products";
 import { CategoryDashboard } from "./routes/admin/category";
 import { ROLE } from "./models/user";
+import { Toaster } from "./components/ui/sonner";
 
 export default function Layout() {
 	return (
@@ -89,6 +90,7 @@ export default function Layout() {
 							/>
 							<Route path="/cart" element={<Cart />} />
 						</Routes>
+						<Toaster />
 					</SidebarProvider>
 				</ThemeProvider>
 			</AuthProvider>

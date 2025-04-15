@@ -66,7 +66,7 @@ type SignUpProps = {
 };
 
 function SignUp({ user, svgText }: SignUpProps) {
-	const { logout,authToken } = useAuth();
+	const { logout, authToken } = useAuth();
 	const svgRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (svgRef.current) {
@@ -114,7 +114,7 @@ function SignUp({ user, svgText }: SignUpProps) {
 			email: user?.email,
 		},
 		validators: {
-			onChange: ()=>{},
+			onChange: () => {},
 		},
 		onSubmit: async ({ value }) => {
 			console.log("SignupPutttt", value);
@@ -125,7 +125,7 @@ function SignUp({ user, svgText }: SignUpProps) {
 					body: JSON.stringify({ ...value, svgText: avatar }),
 					headers: {
 						"Content-Type": "application/json",
-						"Authorization":`Bearer ${authToken}`
+						Authorization: `Bearer ${authToken}`,
 					},
 				}
 			);
