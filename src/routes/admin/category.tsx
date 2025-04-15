@@ -1,8 +1,4 @@
-import {
-	categories,
-	Category,
-	columns,
-} from "@/components/table/category/columns";
+import { Category, columns } from "@/components/table/category/columns";
 import { CategoryDataTable } from "@/components/table/category/data-table";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,7 +64,7 @@ export function CategoryDashboard() {
 			}
 
 			const resp = (await req.json()) as ResponseType;
-			const data = resp.data as Category;
+			const data = resp.data as Category[];
 			console.log(data);
 			setCategories(data);
 		}
@@ -171,10 +167,10 @@ export function CategoryAddDialog({
 export function CategoryUpdateDialog({ row }: { row?: Row<Category> }) {
 	const categoryForm = useForm({
 		defaultValues: {
-			name: row?.original.name,
+			name: row!.original.name,
 		},
 		validators: { onChange: CategorySchema },
-		onSubmit: (val) => console.log(val),
+		onSubmit: ({ value }) => console.log(value, row?.getValue("_id")),
 	});
 
 	return (
@@ -208,7 +204,7 @@ export function CategoryUpdateDialog({ row }: { row?: Row<Category> }) {
 					</div>
 				</div>
 				<div className="flex w-full justify-end px-4">
-					<Button>Update</Button>
+					<Button type="submit">Update</Button>
 				</div>
 			</form>
 		</>
