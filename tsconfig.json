@@ -9,6 +9,8 @@
 		}
 	],
 	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": [
