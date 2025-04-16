@@ -12,11 +12,12 @@ import { createRef, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { User } from "@/models/user";
+import { toast } from "sonner";
 
 // authToken
 export default function Profile() {
 	const { authToken, logout } = useAuth();
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<User | undefined>(undefined);
 	const [svgUser, setSVGUser] = useState<string | "">("");
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -53,11 +54,7 @@ export default function Profile() {
 		}
 	}, [authToken]);
 
-	return (
-		<>
-			<SignUp user={user} svgText={svgUser} />
-		</>
-	);
+	return <>{user ? <SignUp user={user} svgText={svgUser} /> : <></>}</>;
 }
 
 type SignUpProps = {
@@ -114,7 +111,7 @@ function SignUp({ user, svgText }: SignUpProps) {
 			email: user?.email,
 		},
 		validators: {
-			onChange: () => {},
+			onChange: UserInputSchema,
 		},
 		onSubmit: async ({ value }) => {
 			console.log("SignupPutttt", value);
@@ -132,6 +129,7 @@ function SignUp({ user, svgText }: SignUpProps) {
 			console.log("SignupPuttttResponsee", req.json);
 
 			if (req.status === 200) {
+				toast("Profile updated successfully!");
 				// useNavigate('/login');
 			}
 		},
@@ -243,7 +241,7 @@ function SignUp({ user, svgText }: SignUpProps) {
 								className="bg-background"
 								value={field.state.value}
 								onBlur={field.handleBlur}
-								readOnly={true}
+								disabled
 								onChange={(e) =>
 									field.handleChange(e.target.value)
 								}

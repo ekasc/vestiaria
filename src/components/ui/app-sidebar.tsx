@@ -1,25 +1,26 @@
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import {
-    ChartColumnStacked,
-    Gem,
-    PiggyBank,
-    Settings,
-    Shirt,
-    ShoppingBag,
-    ShoppingCart,
-    User,
-    Users,
+	ChartColumnStacked,
+	Gem,
+	LogOut,
+	PiggyBank,
+	Settings,
+	Shirt,
+	ShoppingBag,
+	ShoppingCart,
+	User,
+	Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -34,7 +35,7 @@ interface MenuItem {
 }
 
 export function AppSidebar() {
-	const { isAuthenticated, user, login, logout } = useAuth();
+	const { isAuthenticated, user, login, logout, authToken } = useAuth();
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 	const location = useLocation();
 	const { setOpen } = useSidebar();
@@ -134,31 +135,31 @@ export function AppSidebar() {
 			</SidebarContent>
 			<SidebarFooter className="border-t">
 				{/* -------------test auth-------------- */}
-				<div className=" z-[10000] gap-4 flex flex-col m-4">
+				{/* <div className=" z-[10000] gap-4 flex flex-col m-4">
 					<Button onClick={() => login("admin", "testpass")}>
 						test login admin
 					</Button>
 					<Button onClick={() => login("customer", "testpass")}>
 						test login customer
 					</Button>
-					<Button onClick={() => logout()}>test logout</Button>
-					<span
-						className={
-							isAuthenticated
-								? "text-green-600 font-black"
-								: "text-destructive font-black"
-						}
-					>
-						{isAuthenticated ? "Logged in" : "Logged out"}
-					</span>
-				</div>
+					
+				</div> */}
 				{/* ----------------test auth end-------------- */}
+
 				<div className="flex justify-between w-full px-3 py-2">
 					<Link to="/profile">
 						<User className="w-6 h-6" />
 					</Link>
 					<ShoppingCart />
 				</div>
+
+				{authToken ? (
+					<Button onClick={() => logout()}>
+						<LogOut />
+					</Button>
+				) : (
+					<></>
+				)}
 			</SidebarFooter>
 		</Sidebar>
 	);

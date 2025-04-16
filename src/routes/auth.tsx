@@ -186,6 +186,7 @@ function SignUp() {
 			console.log(value);
 			//
 
+			
 			const req= await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/register`, {
 				method:"POST",
 				body:JSON.stringify({...value, svgText:avatar}),
@@ -196,7 +197,8 @@ function SignUp() {
 
 			if(req.status===200 || req.status===201){
 				// useNavigate('/login');
-				return redirect('/login');
+				// return redirect('/login');
+				location.href='/auth/login'
 			}
 		},
 	});

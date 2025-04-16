@@ -22,6 +22,7 @@ import { CategorySchema } from "@/models/schema";
 import { CategoryUpdateDialog } from "@/routes/admin/category";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { PencilIcon, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export type Category = {
@@ -85,54 +86,7 @@ export const columns: ColumnDef<Category>[] = [
 
 export type CategorySchema = z.infer<typeof CategorySchema>;
 
-export const categories: Category[] = [
-	{
-		name: "Electronics",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{ name: "Clothing", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Home", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Books", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Toys", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Sports", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Beauty", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Clothing", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Home", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Books", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Toys", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Sports", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Beauty", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Clothing", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Home", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Books", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Toys", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Sports", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Beauty", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Clothing", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Home", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Books", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Toys", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Sports", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Beauty", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Clothing", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Home", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Books", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Toys", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Sports", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Beauty", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Clothing", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Home", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Books", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Toys", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Sports", createdAt: new Date(), updatedAt: new Date() },
-	{ name: "Beauty", createdAt: new Date(), updatedAt: new Date() },
-];
-
 function RowActions({ row }: { row: Row<Category> }) {
-	function handleEdit() {
-		const id = row.getValue("_id");
-	}
 	return (
 		<div className="flex items-center space-x-2">
 			<Dialog>
@@ -152,7 +106,7 @@ function RowActions({ row }: { row: Row<Category> }) {
 					<CategoryUpdateDialog row={row} />
 				</DialogContent>
 			</Dialog>
-			<AlertDialog>
+			{/* <AlertDialog>
 				<AlertDialogTrigger asChild>
 					<Button variant="destructive">
 						<Trash2 className="ml-auto h-4 w-4" />
@@ -170,12 +124,32 @@ function RowActions({ row }: { row: Row<Category> }) {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={() => {}}>
+						<AlertDialogAction
+							onClick={async () => {
+								const req = await fetch(
+									`${
+										import.meta.env.VITE_API_URL
+									}/api/v1/category/${row.getValue("_id")}`,
+									{
+										method: "DELETE",
+										headers: {
+											"Content-Type": "application/json",
+										},
+									}
+								);
+								const res = await req.json();
+								if (res.status == 200) {
+									toast("Category deleted successfully");
+								} else {
+									toast("Failed to delete category");
+								}
+							}}
+						>
 							Continue
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
-			</AlertDialog>
+			</AlertDialog> */}
 		</div>
 	);
 }

@@ -38,6 +38,7 @@ async function onSubmit(value: string) {
 	const resp = (await req.json()) as ResponseType;
 	if (!resp.success) {
 		toast("Something went wrong", { duration: 3000 });
+		
 		return;
 	}
 	toast("New category added!", { duration: 5000 });
@@ -55,7 +56,7 @@ export function CategoryDashboard() {
 						"ngrok-skip-browser-warning": "true",
 					},
 					method: "GET",
-				},
+				}
 			);
 
 			if (req.status != 200) {
@@ -112,8 +113,10 @@ export function CategoryAddDialog({
 		},
 		validators: { onChange: CategorySchema },
 		onSubmit: (values) => {
+			
 			console.log(values.value);
 			onSubmit(values.value.name);
+			location.reload()
 		},
 	});
 	return (
@@ -153,7 +156,7 @@ export function CategoryAddDialog({
 							state.isSubmitting,
 						]}
 						children={([_, isSubmitting]) => (
-							<Button type="submit">
+							<Button type="submit" >
 								{isSubmitting ? "..." : "Submit"}
 							</Button>
 						)}
@@ -170,7 +173,28 @@ export function CategoryUpdateDialog({ row }: { row?: Row<Category> }) {
 			name: row!.original.name,
 		},
 		validators: { onChange: CategorySchema },
-		onSubmit: ({ value }) => console.log(value, row?.getValue("_id")),
+		onSubmit: async ({ value }) => {
+			console.log(value, row?.getValue("_id"));
+			const req = await fetch(
+				`${
+					import.meta.env.VITE_API_URL
+				}/api/v1/category/${row?.getValue("_id")}`,
+				{
+					method: "PUT",
+					body: JSON.stringify({ ...value }),
+					headers: {
+						"Content-Type": "application/json",
+						// Authorization: `Bearer ${authToken}`,
+					},
+				}
+			);
+			console.log("SignupPuttttResponsee", req.json);
+
+			if (req.status === 200) {
+				location.reload();
+				// useNavigate('/login');
+			}
+		},
 	});
 
 	return (
