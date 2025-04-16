@@ -1,11 +1,8 @@
-import { ProductType } from "./product";
-
-export interface CartType {
-	id: string;
-	items: CartItem[];
-}
+import { ProductResponseType } from "./product";
 
 export interface CartItem {
-	product: ProductType;
+	product: ProductResponseType;
 	quantity: number;
+	variantId?: string;
 }
+

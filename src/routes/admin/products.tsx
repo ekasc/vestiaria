@@ -2,15 +2,15 @@ import { columns } from "@/components/table/product/columns";
 import { ProductDataTable } from "@/components/table/product/data-table";
 import { Button } from "@/components/ui/button";
 import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import { ProductAddDialog } from "@/components/ui/product-dialogs";
 import { CategoryResponseType, ResponseType } from "@/lib/utils";
-import { ProductResponseType, ProductType } from "@/models/product";
+import { ProductResponseType } from "@/models/product";
 import { ProductSchemaType } from "@/models/schema";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";

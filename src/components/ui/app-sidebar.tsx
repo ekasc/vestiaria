@@ -13,16 +13,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { ResponseType } from "@/lib/utils";
 import { ROLE } from "@/models/user";
 import {
+	Asterisk,
 	ChartColumnStacked,
-	Gem,
 	LogOut,
-	PiggyBank,
 	Settings,
 	Shirt,
 	ShoppingBag,
 	ShoppingCart,
 	User,
-	Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -38,7 +36,7 @@ interface MenuItem {
 }
 
 export function AppSidebar() {
-	const { isAuthenticated, user, login, logout, authToken } = useAuth();
+	const { isAuthenticated, user, logout, authToken } = useAuth();
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 	const location = useLocation();
 	const { setOpen } = useSidebar();
@@ -54,7 +52,7 @@ export function AppSidebar() {
 						"ngrok-skip-browser-warning": "true",
 					},
 					method: "GET",
-				}
+				},
 			);
 
 			if (req.status != 200) {
@@ -100,16 +98,6 @@ export function AppSidebar() {
 					title: "Products",
 					url: "/admin/products",
 					icon: Shirt,
-				},
-				{
-					title: "Orders",
-					url: "/admin/orders",
-					icon: PiggyBank,
-				},
-				{
-					title: "Users",
-					url: "/admin/users",
-					icon: Users,
 				},
 			];
 			setMenuItems(a);

@@ -32,8 +32,9 @@ import { PencilIcon, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Category } from "../category/columns";
+import { ProductResponseType } from "@/lib/utils";
 
-export const columns: ColumnDef<ProductType>[] = [
+export const columns: ColumnDef<ProductResponseType>[] = [
 	{
 		accessorKey: "_id",
 		header: () => null,
@@ -95,7 +96,7 @@ export const columns: ColumnDef<ProductType>[] = [
 		accessorKey: "description",
 		header: () => <div className="font-bold">Description</div>,
 		cell: ({ row }) => {
-			const description = row.getValue("description");
+			const description = row.getValue("description") as string;
 			if (description == null) return <div>Not Available</div>;
 			return (
 				<div className="text-muted-foreground">
@@ -177,10 +178,10 @@ export const columns: ColumnDef<ProductType>[] = [
 
 export type Product = z.infer<typeof ProductSchema>;
 
-function RowActions({ row }: { row: Row<ProductType> }) {
+function RowActions({ row }: { row: Row<ProductResponseType> }) {
 	async function deleteProduct() {
 		const req = await fetch(
-			`${import.meta.env.VITE_API_URL}/api/v1/products/${row.getValue("_id")}`,
+			`${import.meta.env.VITE_API_URL}/api/v1/products/${row.original._id}`,
 			{
 				method: "DELETE",
 				headers: {
@@ -212,7 +213,7 @@ function RowActions({ row }: { row: Row<ProductType> }) {
 							you&apos;re done.
 						</DialogDescription>
 					</DialogHeader>
-					<ProductUpdateDialog row={row} />
+					<ProductUpdateDialog row={row} _id={row.original._id} />
 				</DialogContent>
 			</Dialog>
 			<AlertDialog>
@@ -233,7 +234,7 @@ function RowActions({ row }: { row: Row<ProductType> }) {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={() => {}}>
+						<AlertDialogAction onClick={() => deleteProduct()}>
 							Continue
 						</AlertDialogAction>
 					</AlertDialogFooter>

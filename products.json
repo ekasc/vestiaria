@@ -1,0 +1,109 @@
+[
+  {
+    "_id": "673cfb5c1122334455aabbcc0",
+    "name": "Classic Crew Neck T-Shirt",
+    "description": "Soft and durable cotton crew neck t-shirt.",
+    "image": "/images/products/tee_crew_classic.jpg",
+    "sku": "TEE-CREW-01",
+    "isActive": true,
+    "discount": 0,
+    "price": 24.99,
+    "category": "671afc3a1234567890abcdef0",
+    "variants": [
+      "672bfa4b9876543210fedcba0",
+      "672bfa4b9876543210fedcba1",
+      "672bfa4b9876543210fedcba2",
+      "672bfa4b9876543210fedcba3"
+    ]
+  },
+  {
+    "_id": "673cfb5c1122334455aabbcc1",
+    "name": "Slim Fit Stretch Jeans",
+    "description": "Modern slim fit jeans with a touch of stretch for comfort.",
+    "image": "/images/products/jeans_slim_stretch.jpg",
+    "sku": "JNS-SLMSTR-01",
+    "isActive": true,
+    "discount": 10,
+    "price": 79.95,
+    "category": "671afc3a1234567890abcdef1",
+    "variants": [
+      "672bfa4b9876543210fedcba5",
+      "672bfa4b9876543210fedcba6"
+    ]
+  },
+  {
+    "_id": "673cfb5c1122334455aabbcc2",
+    "name": "Lightweight Running Sneakers",
+    "description": "Breathable and lightweight sneakers for running or casual wear.",
+    "image": "/images/products/sneakers_running_light.jpg",
+    "sku": "SNK-RUNLGT-01",
+    "isActive": true,
+    "discount": 0,
+    "price": 119.99,
+    "category": "671afc3a1234567890abcdef5",
+    "variants": [
+      "672bfa4b9876543210fedcba7",
+      "672bfa4b9876543210fedcba8"
+    ]
+  },
+  {
+    "_id": "673cfb5c1122334455aabbcc3",
+    "name": "Cashmere Blend Scarf",
+    "description": "Soft and warm scarf made with a luxurious cashmere blend.",
+    "image": "/images/products/scarf_cashmere.jpg",
+    "sku": "ACC-SCRFCSH-01",
+    "isActive": true,
+    "discount": 5,
+    "price": 45,
+    "category": "671afc3a1234567890abcdef6",
+    "variants": [
+      "672bfa4b9876543210fedcbaa"
+    ]
+  },
+  {
+    "_id": "673cfb5c1122334455aabbcc4",
+    "name": "Quilted Bomber Jacket",
+    "description": "Stylish quilted bomber jacket for transitional weather.",
+    "image": "/images/products/jacket_bomber_quilted.jpg",
+    "sku": "JKT-BMBQLT-01",
+    "isActive": false,
+    "discount": 20,
+    "price": 135.5,
+    "category": "671afc3a1234567890abcdef3",
+    "variants": [
+      "672bfa4b9876543210fedcba0",
+      "672bfa4b9876543210fedcba4",
+      "672bfa4b9876543210fedcba9"
+    ]
+  },
+  {
+    "_id": "673cfb5c1122334455aabbcc5",
+    "name": "Floral Print Midi Dress",
+    "description": "Elegant midi dress with a vibrant floral print.",
+    "image": "/images/products/dress_midi_floral.jpg",
+    "sku": "DRS-MIDFLR-01",
+    "isActive": true,
+    "discount": 15,
+    "price": 89.99,
+    "category": "671afc3a1234567890abcdef2",
+    "variants": [
+      "672bfa4b9876543210fedcba1",
+      "672bfa4b9876543210fedcba2"
+    ]
+  },
+  {
+    "_id": "673cfb5c1122334455aabbcc6",
+    "name": "Performance Hoodie",
+    "description": "Moisture-wicking hoodie for workouts or casual wear.",
+    "image": "/images/products/hoodie_performance.jpg",
+    "sku": "ACT-HOODPF-01",
+    "isActive": true,
+    "discount": 0,
+    "price": 55,
+    "category": "671afc3a1234567890abcdef4",
+    "variants": [
+      "672bfa4b9876543210fedcba0",
+      "672bfa4b9876543210fedcba4"
+    ]
+  }
+]

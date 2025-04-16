@@ -1,0 +1,68 @@
+[
+  {
+    "_id": "672bfa4b9876543210fedcba0",
+    "color": "Black",
+    "size": "S",
+    "stock": 22
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba1",
+    "color": "White",
+    "size": "M",
+    "stock": 35
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba2",
+    "color": "Navy Blue",
+    "size": "L",
+    "stock": 18
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba3",
+    "color": "Red",
+    "size": "M",
+    "stock": 12
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba4",
+    "color": "Heather Grey",
+    "size": "L",
+    "stock": 28
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba5",
+    "color": "Denim Blue",
+    "size": "32W/30L",
+    "stock": 18
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba6",
+    "color": "Charcoal",
+    "size": "34W/32L",
+    "stock": 14
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba7",
+    "color": "White",
+    "size": "US 9",
+    "stock": 9
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba8",
+    "color": "Black",
+    "size": "US 10",
+    "stock": 7
+  },
+  {
+    "_id": "672bfa4b9876543210fedcba9",
+    "color": "Olive Green",
+    "size": "XL",
+    "stock": 11
+  },
+  {
+    "_id": "672bfa4b9876543210fedcbaa",
+    "color": "Beige",
+    "size": "One Size",
+    "stock": 30
+  }
+]

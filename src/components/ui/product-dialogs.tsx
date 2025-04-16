@@ -1,9 +1,8 @@
 import {
-    CategorySchema,
-    ProductSchema,
-    ProductSchemaType,
-    VariantSchema,
-    VariantSchemaType,
+	ProductSchema,
+	ProductSchemaType,
+	VariantSchema,
+	VariantSchemaType,
 } from "@/models/schema";
 import { useForm } from "@tanstack/react-form";
 import { Row } from "@tanstack/react-table";
@@ -12,12 +11,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select";
 import { CategoryResponseType, cn } from "@/lib/utils";
 import { ProductType } from "@/models/product";
@@ -25,9 +24,9 @@ import { FieldInfo } from "@/models/schema";
 import { ChevronsUpDown, PlusIcon, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
 } from "./collapsible";
 import { ScrollArea } from "./scroll-area";
 import { Switch } from "./switch";
@@ -76,8 +75,6 @@ export function ProductAddDialog({
 		} as ProductSchemaType,
 		validators: { onChange: ProductSchema },
 		onSubmit: ({ value }) => {
-			console.log("variants: ", variants);
-			console.log(value);
 			if (variants) {
 				onSubmit({ ...value, variants: variants });
 			}
@@ -538,48 +535,255 @@ export function ProductAddDialog({
 	);
 }
 
-export function ProductUpdateDialog({ row }: { row?: Row<ProductType> }) {
+export function ProductUpdateDialog({
+	className,
+	row,
+	_id,
+}: {
+	className?: string;
+	row: Row<ProductType>;
+	_id: string;
+}) {
 	const productForm = useForm({
 		defaultValues: {
-			name: row?.original.name,
+			name: row.original.name,
+			price: row.original.price,
+			category: row.original.category._id,
+			description: row.original.description,
+			image: undefined,
+			sku: row.original.sku,
+			isActive: row.original.isActive,
+			discount: row.original.discount,
+			variants: row.original.variants,
+		} as ProductSchemaType,
+		validators: { onChange: ProductSchema },
+		onSubmit: async ({ value }) => {
+			const formData = new FormData();
+
+			console.log(value.description);
+			formData.append("name", value.name);
+			formData.append("image", value.image as Blob);
+			formData.append("sku", value.sku);
+			formData.append("isActive", String(value.isActive));
+			formData.append("discount", value.discount.toString());
+			formData.append("price", value.price.toString());
+			formData.append("category", value.category);
+			formData.append("description", value.description);
+
+			formData.append("variants", JSON.stringify(value.variants));
+			const req = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/v1/products/${row.original._id}`,
+				{
+					method: "PUT",
+					body: formData,
+				},
+			);
+			const res = await req.json();
+			if (res.status == 200) {
+				location.reload();
+			} else {
+				console.log(res);
+			}
 		},
-		validators: { onChange: CategorySchema },
-		onSubmit: (val) => console.log(val),
 	});
 
 	return (
 		<>
 			<form
+				className={cn("flex gap-4 flex-col ", className)}
 				onSubmit={(e) => {
-					e.stopPropagation();
 					e.preventDefault();
+					e.stopPropagation();
 					productForm.handleSubmit();
 				}}
 			>
-				<div className="p-4">
-					<div className="flex flex-col gap-4">
+				<div className="flex flex-col gap-4">
+					<div className="flex w-full flex-col gap-2">
 						<productForm.Field
-							name="name"
+							name="image"
 							children={(field) => (
 								<>
-									<Label htmlFor={field.name}>Name</Label>
+									<Label htmlFor={field.name}>Image</Label>
 									<Input
 										className="bg-sidebar"
 										id={field.name}
+										type="file"
 										onChange={(e) =>
-											field.handleChange(e.target.value)
+											field.handleChange(
+												e.target.files![0],
+											)
 										}
-										onBlur={field.handleBlur}
-										value={field.state.value}
 									/>
 									<FieldInfo field={field} />
 								</>
 							)}
 						/>
 					</div>
+					<div className="flex gap-2">
+						<div className="flex w-full flex-col gap-2">
+							<productForm.Field
+								name="name"
+								children={(field) => (
+									<>
+										<Label htmlFor={field.name}>Name</Label>
+										<Input
+											className="bg-sidebar"
+											id={field.name}
+											type="text"
+											value={field.state.value}
+											onChange={(e) =>
+												field.handleChange(
+													e.target.value,
+												)
+											}
+										/>
+										<FieldInfo field={field} />
+									</>
+								)}
+							/>
+						</div>
+						<div className="flex w-full flex-col gap-2">
+							<productForm.Field
+								name="price"
+								children={(field) => (
+									<>
+										<Label htmlFor={field.name}>
+											Price
+										</Label>
+										<Input
+											value={field.state.value}
+											className="bg-sidebar"
+											id={field.name}
+											type="number"
+											onChange={(e) =>
+												field.handleChange(
+													Number(e.target.value),
+												)
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldInfo field={field} />
+									</>
+								)}
+							/>
+						</div>
+					</div>
+
+					<div className="flex gap-2">
+						<div className="flex w-full flex-col gap-2">
+							<productForm.Field
+								name="sku"
+								children={(field) => (
+									<>
+										<Label htmlFor={field.name}>SKU</Label>
+										<Input
+											className="bg-sidebar"
+											value={field.state.value}
+											id={field.name}
+											onChange={(e) =>
+												field.handleChange(
+													e.target.value,
+												)
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldInfo field={field} />
+									</>
+								)}
+							/>
+						</div>
+					</div>
+					<div className="flex w-full flex-col gap-2">
+						<productForm.Field
+							name="description"
+							children={(field) => (
+								<>
+									<Label htmlFor={field.name}>
+										Description
+									</Label>
+									<Input
+										value={field.state.value}
+										className="bg-sidebar"
+										id={field.name}
+										type="text"
+										onChange={(e) =>
+											field.handleChange(e.target.value)
+										}
+										onBlur={field.handleBlur}
+									/>
+									<FieldInfo field={field} />
+								</>
+							)}
+						/>
+					</div>
+
+					<div className="flex gap-2">
+						<div className="flex w-full flex-col gap-2">
+							<productForm.Field
+								name="discount"
+								children={(field) => (
+									<>
+										<Label htmlFor={field.name}>
+											Discount
+										</Label>
+										<Input
+											value={field.state.value}
+											className="bg-sidebar"
+											id={field.name}
+											type="number"
+											placeholder="%"
+											onChange={(e) =>
+												field.handleChange(
+													Number(e.target.value),
+												)
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldInfo field={field} />
+									</>
+								)}
+							/>
+						</div>
+						<div className="flex w-1/4 flex-col justify-center gap-2">
+							<productForm.Field
+								name="isActive"
+								children={(field) => (
+									<>
+										<Label htmlFor={field.name}>
+											Active
+										</Label>
+										<Switch
+											className=""
+											id={field.name}
+											checked={field.state.value}
+											onCheckedChange={(e) =>
+												field.handleChange(e)
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldInfo field={field} />
+									</>
+								)}
+							/>
+						</div>
+					</div>
 				</div>
-				<div className="flex w-full justify-end px-4">
-					<Button>Update</Button>
+
+				<div className="flex w-full justify-end">
+					<productForm.Subscribe
+						selector={(state) => [
+							state.canSubmit,
+							state.isSubmitting,
+						]}
+						children={([_, isSubmitting]) => {
+							console.log(productForm.getAllErrors());
+							return (
+								<Button type="submit">
+									{isSubmitting ? "..." : "Submit"}
+								</Button>
+							);
+						}}
+					/>
 				</div>
 			</form>
 		</>

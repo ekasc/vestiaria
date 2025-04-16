@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "671afc3a1234567890abcdef0",
+    "name": "Tops",
+    "image": "/images/categories/tops.jpg"
+  },
+  {
+    "_id": "671afc3a1234567890abcdef1",
+    "name": "Bottoms",
+    "image": "/images/categories/bottoms.jpg"
+  },
+  {
+    "_id": "671afc3a1234567890abcdef2",
+    "name": "Dresses & Skirts",
+    "image": "/images/categories/dresses_skirts.png"
+  },
+  {
+    "_id": "671afc3a1234567890abcdef3",
+    "name": "Outerwear",
+    "image": "/images/categories/outerwear.jpg"
+  },
+  {
+    "_id": "671afc3a1234567890abcdef4",
+    "name": "Activewear",
+    "image": "/images/categories/activewear.png"
+  },
+  {
+    "_id": "671afc3a1234567890abcdef5",
+    "name": "Footwear",
+    "image": null
+  },
+  {
+    "_id": "671afc3a1234567890abcdef6",
+    "name": "Accessories",
+    "image": "/images/categories/accessories.jpg"
+  },
+  {
+    "_id": "671afc3a1234567890abcdef7",
+    "name": "Swimwear",
+    "image": null
+  },
+  {
+    "_id": "671afc3a1234567890abcdef8",
+    "name": "Underwear & Socks",
+    "image": "/images/categories/underwear_socks.png"
+  }
+]

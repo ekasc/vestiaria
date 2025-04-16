@@ -88,7 +88,7 @@ export default function Layout() {
 									</ProtectedRoute>
 								}
 							/>
-							<Route path="/cart" element={<Cart />} />
+							{/* <Route path="/cart" element={<Cart />} /> */}
 						</Routes>
 						<Toaster />
 					</SidebarProvider>

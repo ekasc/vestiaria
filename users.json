@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "674dfc6dabcdeffedcba9870",
+    "firstName": "Sam",
+    "lastName": "Wilson",
+    "email": "sam.wilson@email.com",
+    "passwordHash": "$2b$10$placeholderHashForSamWilson123",
+    "street": "9 River Road",
+    "apartment": "Unit 12",
+    "city": "Metroville",
+    "zip": "54321",
+    "country": "USA",
+    "phone": "555-1122",
+    "isAdmin": false,
+    "svgText": ""
+  },
+  {
+    "_id": "674dfc6dabcdeffedcba9871",
+    "firstName": "Maria",
+    "lastName": "Garcia",
+    "email": "maria.g.admin@domain.net",
+    "passwordHash": "$2b$10$placeholderHashForMariaGarcia456",
+    "street": "24 Mountain View",
+    "apartment": null,
+    "city": "Hilltop",
+    "zip": "98765",
+    "country": "Canada",
+    "phone": "555-3344",
+    "isAdmin": true,
+    "svgText": "<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><ellipse cx='50' cy='50' rx='40' ry='20' fill='blue' /></svg>"
+  },
+  {
+    "_id": "674dfc6dabcdeffedcba9872",
+    "firstName": "Chen",
+    "lastName": "Li",
+    "email": "chen.li@mailservice.org",
+    "passwordHash": "$2b$10$placeholderHashForChenLi789",
+    "street": null,
+    "apartment": null,
+    "city": "Ocean City",
+    "zip": null,
+    "country": "Australia",
+    "phone": "555-5566",
+    "isAdmin": false,
+    "svgText": ""
+  }
+]

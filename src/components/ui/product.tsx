@@ -3,14 +3,27 @@ import { ProductResponseType, ProductVariant } from "@/models/product";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { Button } from "./button";
+import { Label } from "./label";
+import { Input } from "./input";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Product() {
 	const { productId } = useParams();
+	const { user } = useAuth();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [product, setProduct] = useState<ProductResponseType | undefined>();
 	const [randomProducts, setRandomProducts] = useState<ProductResponseType[]>(
 		[],
 	);
+	const [isVisible, setIsVisible] = useState(true);
+
+	const [shippingAddress1, setShippingAddress1] = useState("123 Street Name");
+	const [city, setCity] = useState("Vancouver");
+	const [zip, setZip] = useState("V5K0A1");
+	const [country, setCountry] = useState("Canada");
+	const [phone, setPhone] = useState("1234567890");
+	const [status, setStatus] = useState("Pending");
+	const [userObj, setUserObj] = useState(user.id);
 
 	useEffect(() => {
 		async function getData() {
@@ -89,6 +102,38 @@ export default function Product() {
 		);
 	}
 
+	async function handleSubmit() {
+		const variant = searchParams.get("variant");
+		const req = await fetch(
+			`${import.meta.env.VITE_API_URL}/api/v1/orders`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"ngrok-skip-browser-warning": "true",
+				},
+				body: JSON.stringify({
+					orderItems: [
+						{
+							productId: productId,
+							variantId: variant,
+							quantity: 1,
+						},
+					],
+					userId: user,
+					shippingAddress1,
+					city,
+					zip,
+					country,
+					phone,
+					status,
+				}),
+			},
+		);
+		const resp = await req.json();
+		console.log(resp);
+	}
+
 	return (
 		<div>
 			{product == undefined ? (
@@ -150,25 +195,102 @@ export default function Product() {
 
 								<div className="flex items-center justify-between gap-4 ">
 									<Button
-										className=""
-										variant="outline"
-										size="lg"
 										onClick={() => {
-											for (const v of searchParams) {
-												console.log(v);
-											}
+											setIsVisible(!isVisible);
 										}}
-									>
-										Add to cart
-									</Button>
-									<Button
-										className="bg-green-600 hover:bg-green-700 hover:cursor-pointer"
+										className="bg-green-600 hover:bg-green-700 hover:cursor-pointer text-foreground"
 										variant="default"
 										size="lg"
 									>
 										Checkout
 									</Button>
 								</div>
+							</div>
+
+							<div
+								className="flex items-center justify-between border-b p-4"
+								hidden={isVisible}
+							>
+								<form
+									className="space-y-4 p-4"
+									onSubmit={(e) => {
+											e.preventDefault();
+											handleSubmit()
+										}}
+								>
+									{/* shippingAddress1 */}
+									<div className="flex w-full flex-col gap-2">
+										<Label className="text-sm font-bold">
+											Shipping Address 1
+										</Label>
+										<Input
+											value={shippingAddress1}
+											onChange={(e) =>
+												setShippingAddress1(
+													e.target.value,
+												)
+											}
+											placeholder="Enter shipping address line 1"
+										/>
+									</div>
+
+									{/* City */}
+									<div className="flex w-full flex-col gap-2">
+										<Label className="text-sm font-bold">
+											City
+										</Label>
+										<Input
+											value={city}
+											onChange={(e) =>
+												setCity(e.target.value)
+											}
+											placeholder="Vancouver"
+										/>
+									</div>
+
+									{/* ZIP/Postal Code */}
+									<div className="flex w-full flex-col gap-2">
+										<Label className="text-sm font-bold">
+											Zip/Postal Code
+										</Label>
+										<Input
+											value={zip}
+											onChange={(e) =>
+												setZip(e.target.value)
+											}
+											placeholder="V5K0A1"
+										/>
+									</div>
+
+									{/* Country */}
+									<div className="flex w-full flex-col gap-2">
+										<Label className="text-sm font-bold">
+											Country
+										</Label>
+										<Input
+											value={country}
+											onChange={(e) =>
+												setCountry(e.target.value)
+											}
+											placeholder="Canada"
+										/>
+									</div>
+
+									{/* Phone */}
+									<div className="flex w-full flex-col gap-2">
+										<Label className="text-sm font-bold">
+											Phone
+										</Label>
+										<Input
+											value={phone}
+											onChange={(e) =>
+												setPhone(e.target.value)
+											}
+											placeholder="1234567890"
+										/>
+									</div>
+									<Button type="submit">Submit</Button>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -218,6 +340,19 @@ function VariantSelector({
 		);
 	};
 
+	function findVariantId(color?: string, size?: string): string | null {
+		if (!color || !size) return null; // can't match if either is missing
+
+		const found = variants.find(
+			(v) =>
+				v.color.toLowerCase() === color.toLowerCase() &&
+				v.size.toLowerCase() === size.toLowerCase() &&
+				v.stock > 0,
+		);
+		console.log("found", found);
+		return found ? found._id : null;
+	}
+
 	return (
 		<>
 			<span className="px-4 text-muted-foreground ">Color</span>
@@ -237,6 +372,18 @@ function VariantSelector({
 							size="lg"
 							onClick={() => {
 								handleURLParams("color", color);
+								if (selectedSize) {
+									const variantId = findVariantId(
+										color,
+										selectedSize,
+									);
+									if (variantId) {
+										handleURLParams("variant", variantId);
+									} else {
+										// Clear out the variant param if no valid match
+										handleURLParams("variant", "");
+									}
+								}
 							}}
 						>
 							{color.toUpperCase()}
@@ -264,6 +411,18 @@ function VariantSelector({
 							size="lg"
 							onClick={() => {
 								handleURLParams("size", size);
+								if (selectedColor) {
+									const variantId = findVariantId(
+										selectedColor,
+										size,
+									);
+									console.log("variantId", variantId);
+									if (variantId) {
+										handleURLParams("variant", variantId);
+									} else {
+										handleURLParams("variant", "");
+									}
+								}
 							}}
 						>
 							{size.toUpperCase()}

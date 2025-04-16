@@ -73,10 +73,11 @@ export const ProductSchema = z.object({
 	variants: z.array(VariantSchema),
 	sku: z.string().min(1, "SKU is required"),
 	isActive: z.boolean(),
-	discount: z.number().min(1, "Discount is required"),
+	discount: z.number().nonnegative(),
 });
 
 export type ProductSchemaType = z.infer<typeof ProductSchema>;
+
 export type VariantSchemaType = z.infer<typeof VariantSchema>;
 
 export function FieldInfo({ field }: { field: AnyFieldApi }) {

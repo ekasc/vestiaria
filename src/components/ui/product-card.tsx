@@ -1,4 +1,5 @@
 import { ProductResponseType } from "@/models/product";
+import { addToCart } from "@/routes/cart";
 import clsx from "clsx";
 import { Link } from "react-router";
 import { Button } from "./button";
@@ -46,12 +47,14 @@ export function ProductCard({ product }: { product: ProductResponseType }) {
 						})}
 					</span>
 					<Button
+						onClick={() => addToCart(product)}
 						variant="link"
 						className="w-fit h-full px-2 dark:text-green-500 text-red-500"
 					>
 						Add to Cart
 					</Button>
 				</div>
+				ok
 			</div>
 		</div>
 	);
