@@ -25,7 +25,7 @@ function LandingPage() {
 			);
 			const resp = req.data;
 			setProduct(resp);
-			console.log(resp);
+			// console.log(resp);
 		}
 		getData();
 	}, []);

@@ -18,12 +18,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ProductUpdateDialog } from "@/components/ui/product-dialogs";
 import {
 	Tooltip,
@@ -31,13 +25,13 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ProductResponseType } from "@/lib/utils";
 import { ProductType } from "@/models/product";
 import { ProductSchema } from "@/models/schema";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { Ellipsis, PencilIcon, Trash2 } from "lucide-react";
+import { PencilIcon, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Category } from "../category/columns";
 
 export const columns: ColumnDef<ProductType>[] = [
 	{
@@ -89,10 +83,10 @@ export const columns: ColumnDef<ProductType>[] = [
 		accessorKey: "category",
 		header: () => <div className="font-bold">Category</div>,
 		cell: ({ row }) => {
-			console.log(row.getValue("category"))
+			const category = row.getValue("category") as Category;
 			return (
 				<div className="flex items-center">
-					<div className="font-medium">{row.getValue("category")}</div>
+					<div className="font-medium">{category.name}</div>
 				</div>
 			);
 		},
@@ -100,6 +94,17 @@ export const columns: ColumnDef<ProductType>[] = [
 	{
 		accessorKey: "description",
 		header: () => <div className="font-bold">Description</div>,
+		cell: ({ row }) => {
+			const description = row.getValue("description");
+			if (description == null) return <div>Not Available</div>;
+			return (
+				<div className="text-muted-foreground">
+					{description.length > 50
+						? description.slice(0, 50) + "..."
+						: description}
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "variants",
@@ -192,67 +197,48 @@ function RowActions({ row }: { row: Row<ProductType> }) {
 	}
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<div>
-					<Button
-						variant="ghost"
-						className="flex h-8 w-8 p-0 data-[state=open]:bg-muted border hover:border-black"
-					>
-						<Ellipsis className="h-4 w-4" />
-						<span className="sr-only">Open menu</span>
+		<div className="flex items-center space-x-2">
+			<Dialog>
+				<DialogTrigger asChild>
+					<Button>
+						<PencilIcon className="ml-auto h-4 w-4" />
 					</Button>
-				</div>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-[160px]">
-				<Dialog>
-					<DialogTrigger asChild>
-						<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-							Edit
-							<PencilIcon className="ml-auto h-4 w-4" />
-						</DropdownMenuItem>
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle> Edit client </DialogTitle>
-							<DialogDescription>
-								Make changes to the client here. Click save when
-								you&apos;re done.
-							</DialogDescription>
-						</DialogHeader>
-						<ProductUpdateDialog row={row} />
-					</DialogContent>
-				</Dialog>
-				<AlertDialog>
-					<AlertDialogTrigger asChild>
-						<DropdownMenuItem
-							variant="destructive"
-							onSelect={(e) => e.preventDefault()}
-						>
-							Delete
-							<Trash2 className="ml-auto h-4 w-4" />
-						</DropdownMenuItem>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>
-								Are you absolutely sure?
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								This action cannot be undone. This will
-								permanently delete the selected item from the
-								database.
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction onClick={deleteProduct}>
-								Continue
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
-			</DropdownMenuContent>
-		</DropdownMenu>
+				</DialogTrigger>
+				<DialogContent className="">
+					<DialogHeader>
+						<DialogTitle> Edit category </DialogTitle>
+						<DialogDescription>
+							Make changes to the category here. Click save when
+							you&apos;re done.
+						</DialogDescription>
+					</DialogHeader>
+					<ProductUpdateDialog row={row} />
+				</DialogContent>
+			</Dialog>
+			<AlertDialog>
+				<AlertDialogTrigger asChild>
+					<Button variant="destructive">
+						<Trash2 className="ml-auto h-4 w-4" />
+					</Button>
+				</AlertDialogTrigger>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							Are you absolutely sure?
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently
+							delete the selected item from the database.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction onClick={() => {}}>
+							Continue
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</div>
 	);
 }

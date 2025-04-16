@@ -49,7 +49,7 @@ export default function Layout() {
 							/>
 
 							<Route
-								path="/shop/category/:category"
+								path="/shop/category/:categoryId"
 								element={<Shop />}
 							/>
 							<Route

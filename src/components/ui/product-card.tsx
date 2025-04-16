@@ -1,13 +1,13 @@
-import { Button } from "./button";
-import { Link } from "react-router";
+import { ProductResponseType } from "@/models/product";
 import clsx from "clsx";
-import { ProductType } from "@/models/product";
+import { Link } from "react-router";
+import { Button } from "./button";
 
 export default function ProductCardGrid({
 	product,
 	className,
 }: {
-	product: ProductType[];
+	product: ProductResponseType[];
 	className?: string;
 }) {
 	return (
@@ -21,13 +21,13 @@ export default function ProductCardGrid({
 	);
 }
 
-export function ProductCard({ product }: { product: ProductType }) {
+export function ProductCard({ product }: { product: ProductResponseType }) {
 	return (
 		<div className="w-full h-full flex flex-col border bg-sidebar justify-between overflow-hidden dark:hover:border-green-500 hover:border-red-500">
 			<div className="overflow-hidden h-full w-full">
 				<Link to={`/shop/${product._id}`}>
 					<img
-						src={product.image?.webkitRelativePath}
+						src={product.image}
 						className="object-cover h-full w-full object-center hover:scale-[1.03] transition ease-in-out hover:cursor-pointer"
 					/>
 				</Link>

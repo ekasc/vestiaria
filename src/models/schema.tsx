@@ -28,14 +28,11 @@ export const UserInputSchema = z.object({
 	isActive: z.boolean().optional(),
 });
 
-
 export const ProfileUserInputSchema = z.object({
 	firstName: z.string().min(1, "First name is required"),
 	lastName: z.string().min(1, "Last name is required"),
 	email: z.string().email("Invalid email address"),
 });
-
-
 
 export const authSchema = z
 	.object({
@@ -80,6 +77,7 @@ export const ProductSchema = z.object({
 });
 
 export type ProductSchemaType = z.infer<typeof ProductSchema>;
+export type VariantSchemaType = z.infer<typeof VariantSchema>;
 
 export function FieldInfo({ field }: { field: AnyFieldApi }) {
 	return (

@@ -1,6 +1,5 @@
-import { testProduct } from "@/lib/utils";
-import { ProductType, ProductVariant } from "@/models/product";
-import axios from "axios";
+import { ResponseType } from "@/lib/utils";
+import { ProductResponseType, ProductVariant } from "@/models/product";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { Button } from "./button";
@@ -8,23 +7,54 @@ import { Button } from "./button";
 export default function Product() {
 	const { productId } = useParams();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [product, setProduct] = useState<ProductType | undefined>();
-	const [randomProducts, setRandomProducts] = useState<ProductType[]>([]);
+	const [product, setProduct] = useState<ProductResponseType | undefined>();
+	const [randomProducts, setRandomProducts] = useState<ProductResponseType[]>(
+		[],
+	);
 
 	useEffect(() => {
 		async function getData() {
-			const req = await axios.get(
-				`${import.meta.env.VITE_API_URL}/product/${productId}`,
+			const req = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/v1/products/${productId}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"ngrok-skip-browser-warning": "true",
+					},
+				},
 			);
-			const resp = (await req.data) as ProductType;
-			const allProducts = await axios
-				.get<ProductType[]>(`${import.meta.env.VITE_API_URL}/product`)
-				.then((i) => {
-					return i.data;
-				});
-			// resp.variants = testProduct.variants;
-			setProduct(resp);
-			const random: ProductType[] = [];
+			const resp = (await req.json()) as ResponseType;
+
+			const allProductsReq = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/v1/products`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"ngrok-skip-browser-warning": "true",
+					},
+				},
+			);
+
+			const allProductsResp =
+				(await allProductsReq.json()) as ResponseType;
+
+			if (!resp.success) {
+				console.log(resp.message);
+				return;
+			}
+			if (!allProductsResp.success) {
+				console.log(allProductsResp.message);
+				return;
+			}
+
+			const allProducts = allProductsResp.data as ProductResponseType[];
+
+			setProduct(resp.data as ProductResponseType);
+
+			console.log(product);
+			const random: ProductResponseType[] = [];
 			const count = new Set<number>();
 			while (random.length < 3) {
 				if (count.size >= allProducts.length) {
@@ -41,6 +71,7 @@ export default function Product() {
 			}
 			setRandomProducts(random);
 		}
+
 		getData();
 	}, [productId]);
 
@@ -79,12 +110,12 @@ export default function Product() {
 									return (
 										<Link
 											className="border"
-											to={`/shop/${item.id}`}
-											key={item.id}
+											to={`/shop/${item._id}`}
+											key={item._id}
 										>
 											<img
 												src={item.image}
-												alt={item.title}
+												alt={item.name}
 											/>
 										</Link>
 									);
@@ -93,7 +124,7 @@ export default function Product() {
 						</div>
 						<div className="m-2 flex w-full flex-col gap-4 border bg-sidebar ">
 							<h1 className="border-b p-4 text-lg">
-								{product.title}
+								{product.name}
 							</h1>
 							<span className="px-4 text-muted-foreground text-md m-0">
 								Description

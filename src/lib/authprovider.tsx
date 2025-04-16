@@ -1,4 +1,4 @@
-import { ROLE, User } from "@/models/user";
+import { User } from "@/models/user";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { ResponseType } from "./utils";
 
@@ -45,15 +45,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	useEffect(() => {
 		//setUser(userResponseTest);
-		console.log("in auth provider");
 		const storedUser = localStorage.getItem("user");
 		const storedToken = localStorage.getItem("token");
-		console.log("storedToken1: ", storedToken);
 		if (storedUser && storedToken) {
 			setUser(JSON.parse(storedUser));
 			setAuthToken(storedToken);
 		}
-		console.log("storedToken2: ", storedToken);
 	}, []);
 
 	async function login(email: string, password: string) {

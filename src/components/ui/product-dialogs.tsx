@@ -1,33 +1,33 @@
 import {
-	CategorySchema,
-	ProductSchema,
-	ProductSchemaType,
-	VariantSchema,
+    CategorySchema,
+    ProductSchema,
+    ProductSchemaType,
+    VariantSchema,
+    VariantSchemaType,
 } from "@/models/schema";
 import { useForm } from "@tanstack/react-form";
 import { Row } from "@tanstack/react-table";
-import { Product } from "../table/product/columns";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { CategoryResponseType, cn } from "@/lib/utils";
-import { ProductVariant } from "@/models/product";
+import { ProductType } from "@/models/product";
 import { FieldInfo } from "@/models/schema";
 import { ChevronsUpDown, PlusIcon, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
 } from "./collapsible";
 import { ScrollArea } from "./scroll-area";
 import { Switch } from "./switch";
@@ -48,14 +48,16 @@ export function ProductAddDialog({
 	}: ProductSchemaType) => Promise<void>;
 	categories?: CategoryResponseType[];
 }) {
-	const [variants, setVariants] = useState<ProductVariant[] | undefined>([]);
+	const [variants, setVariants] = useState<VariantSchemaType[] | undefined>(
+		[],
+	);
 
 	const variantForm = useForm({
 		defaultValues: {
 			color: "",
 			size: "",
 			stock: 0,
-		} as ProductVariant,
+		} as VariantSchemaType,
 		validators: { onChange: VariantSchema },
 		onSubmit: ({ value }) => addVariant(value),
 	});
@@ -82,8 +84,7 @@ export function ProductAddDialog({
 		},
 	});
 
-	function addVariant(newVariant: ProductVariant) {
-		console.log("Adding variant:", newVariant); // Debug logging
+	function addVariant(newVariant: VariantSchemaType) {
 		setVariants((prev) => {
 			if (!prev) return [newVariant];
 			const existingIndex = prev.findIndex(
@@ -99,7 +100,7 @@ export function ProductAddDialog({
 		});
 	}
 
-	function removeVariant(value: ProductVariant) {
+	function removeVariant(value: VariantSchemaType) {
 		setVariants((prev) => {
 			if (!prev) return prev;
 			return prev.filter(
@@ -269,6 +270,29 @@ export function ProductAddDialog({
 								)}
 							/>
 						</div>
+					</div>
+					<div className="flex w-full flex-col gap-2">
+						<productForm.Field
+							name="description"
+							children={(field) => (
+								<>
+									<Label htmlFor={field.name}>
+										Description
+									</Label>
+									<Input
+										value={field.state.value}
+										className="bg-sidebar"
+										id={field.name}
+										type="text"
+										onChange={(e) =>
+											field.handleChange(e.target.value)
+										}
+										onBlur={field.handleBlur}
+									/>
+									<FieldInfo field={field} />
+								</>
+							)}
+						/>
 					</div>
 
 					<div className="flex gap-2">
@@ -514,7 +538,7 @@ export function ProductAddDialog({
 	);
 }
 
-export function ProductUpdateDialog({ row }: { row?: Row<Product> }) {
+export function ProductUpdateDialog({ row }: { row?: Row<ProductType> }) {
 	const productForm = useForm({
 		defaultValues: {
 			name: row?.original.name,

@@ -10,6 +10,8 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
+import { ResponseType } from "@/lib/utils";
+import { ROLE } from "@/models/user";
 import {
 	ChartColumnStacked,
 	Gem,
@@ -24,9 +26,10 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
+import { toast } from "sonner";
+import { Category } from "../table/category/columns";
 import { AuroraText } from "./aurora-text";
 import { Button } from "./button";
-import { ROLE } from "@/models/user";
 
 interface MenuItem {
 	title: string;
@@ -39,8 +42,39 @@ export function AppSidebar() {
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 	const location = useLocation();
 	const { setOpen } = useSidebar();
+	const [categories, setCategories] = useState<Category[]>([]);
 
 	useEffect(() => {
+		async function fetchData() {
+			const req = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/v1/category`,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						"ngrok-skip-browser-warning": "true",
+					},
+					method: "GET",
+				}
+			);
+
+			if (req.status != 200) {
+				console.log(req.statusText);
+				toast(`Something went wrong: ${req.statusText}`, {
+					duration: 3000,
+				});
+				return;
+			}
+
+			const resp = (await req.json()) as ResponseType;
+			if (!resp.success) {
+				toast("Something went wrong", { duration: 3000 });
+				return;
+			}
+			const data = resp.data as Category[];
+			setCategories(data);
+		}
+		fetchData();
+
 		if (
 			location.pathname === "/auth/login" ||
 			location.pathname === "/auth/signup"
@@ -49,7 +83,7 @@ export function AppSidebar() {
 		} else {
 			setOpen(true);
 		}
-		console.log("isAuthenticated: ", isAuthenticated);
+
 		if (isAuthenticated && user?.role == ROLE.Admin) {
 			const a = [
 				{
@@ -80,31 +114,17 @@ export function AppSidebar() {
 			];
 			setMenuItems(a);
 		} else {
-			const a = [
-				{
-					title: "All",
-					url: "/shop",
-					icon: ShoppingBag,
-				},
-				{
-					title: "Men",
-					url: "/shop/category/men's clothing",
-					icon: Shirt,
-				},
-				{
-					title: "Women",
-					url: "/shop/category/women's clothing",
-					icon: Shirt,
-				},
-				{
-					title: "Accessories",
-					url: "/shop/category/jewelery",
-					icon: Gem,
-				},
-			];
+			let a: MenuItem[] = [];
+			categories.forEach((category) => {
+				a.push({
+					title: category.name,
+					url: `/shop/category/${category._id}`,
+					icon: Asterisk,
+				});
+			});
 			setMenuItems(a);
 		}
-	}, [isAuthenticated, location.pathname, setOpen, user]);
+	}, [isAuthenticated, location.pathname, setOpen, user, categories.length]);
 
 	return (
 		<Sidebar variant="floating">

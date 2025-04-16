@@ -2,22 +2,19 @@ import { columns } from "@/components/table/product/columns";
 import { ProductDataTable } from "@/components/table/product/data-table";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
 import { ProductAddDialog } from "@/components/ui/product-dialogs";
-import {
-    CategoryResponseType,
-    ProductResponseType,
-    ResponseType,
-} from "@/lib/utils";
-import { ProductType } from "@/models/product";
+import { CategoryResponseType, ResponseType } from "@/lib/utils";
+import { ProductResponseType, ProductType } from "@/models/product";
 import { ProductSchemaType } from "@/models/schema";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 async function onSubmit(value: ProductSchemaType) {
 	const formData = new FormData();
@@ -29,6 +26,7 @@ async function onSubmit(value: ProductSchemaType) {
 	formData.append("discount", value.discount.toString());
 	formData.append("price", value.price.toString());
 	formData.append("category", value.category);
+	formData.append("description", value.description);
 
 	formData.append("variants", JSON.stringify(value.variants));
 
@@ -44,6 +42,7 @@ async function onSubmit(value: ProductSchemaType) {
 
 	const resp = (await req.json()) as ResponseType;
 	console.log(resp.data);
+	toast.success("Product added successfully");
 }
 
 export default function ProductDashboard() {
@@ -51,7 +50,7 @@ export default function ProductDashboard() {
 		CategoryResponseType[] | undefined
 	>([]);
 
-	const [products, setProducts] = useState<ProductType[]>([]);
+	const [products, setProducts] = useState<ProductResponseType[]>([]);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -72,7 +71,6 @@ export default function ProductDashboard() {
 			}
 
 			const productResp = (await productReq.json()) as ResponseType;
-			console.log("products: ", productResp.data);
 			setProducts(productResp.data as ProductResponseType[]);
 
 			const req = await fetch(
